@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodforbattraren.local/schemas/analysis-report.schema.json",
+  "title": "Kodförbättraren Initial Analysis Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "scope", "inventory", "baseline", "findings", "dependencies", "non_actions"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "coverage"],
+      "properties": {
+        "description": {"type": "string", "minLength": 1},
+        "coverage": {"enum": ["full", "sampled", "targeted"]},
+        "not_reviewed": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["application_types", "languages_frameworks"],
+      "properties": {
+        "application_types": {"type": "array", "items": {"type": "string"}},
+        "languages_frameworks": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maintainability", "architecture", "testability", "developer_experience", "usability", "accessibility"],
+      "properties": {
+        "maintainability": {"$ref": "#/$defs/baselineDimension"},
+        "architecture": {"$ref": "#/$defs/baselineDimension"},
+        "testability": {"$ref": "#/$defs/baselineDimension"},
+        "developer_experience": {"$ref": "#/$defs/baselineDimension"},
+        "usability": {"$ref": "#/$defs/baselineDimension"},
+        "accessibility": {"$ref": "#/$defs/baselineDimension"}
+      }
+    },
+    "findings": {"type": "array", "items": {"type": "string", "pattern": "^F-[0-9]{3,}$"}, "uniqueItems": true},
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["before", "after", "reason"],
+        "properties": {
+          "before": {"type": "string", "pattern": "^F-[0-9]{3,}$"},
+          "after": {"type": "string", "pattern": "^F-[0-9]{3,}$"},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "non_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["observation", "decision", "reason"],
+        "properties": {
+          "observation": {"type": "string", "minLength": 1},
+          "decision": {"enum": ["leave_unchanged", "defer", "needs_more_evidence"]},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "baselineDimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "confidence", "rationale"],
+      "properties": {
+        "level": {"enum": ["strong", "adequate", "weak", "unknown", "not_applicable"]},
+        "confidence": {"enum": ["high", "medium", "low"]},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

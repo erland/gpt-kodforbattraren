@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Kodförbättraren project status",
+  "type": "object",
+  "required": ["schema_version", "project", "plan", "progress", "state", "next_step", "resume"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "project": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {"const": "kodforbattraren"},
+        "name": {"const": "Kodförbättraren"}
+      },
+      "additionalProperties": true
+    },
+    "plan": {
+      "type": "object",
+      "required": ["path", "total_steps"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "total_steps": {"const": 20}
+      },
+      "additionalProperties": true
+    },
+    "progress": {
+      "type": "object",
+      "required": ["current_phase", "current_step", "last_completed_step", "completed_steps", "skipped_steps", "inserted_steps"],
+      "properties": {
+        "current_phase": {"type": "string", "minLength": 1},
+        "current_step": {"type": ["integer", "null"], "minimum": 1, "maximum": 20},
+        "last_completed_step": {"type": "integer", "minimum": 0, "maximum": 20},
+        "completed_steps": {
+          "type": "array",
+          "items": {"type": "integer", "minimum": 1, "maximum": 20},
+          "uniqueItems": true
+        },
+        "skipped_steps": {"type": "array"},
+        "inserted_steps": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "state": {
+      "type": "object",
+      "required": ["overall", "blocking_issues", "warnings"],
+      "properties": {
+        "overall": {"enum": ["pass", "blocked", "release_ready"]},
+        "blocking_issues": {"type": "array"},
+        "warnings": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "next_step": {"type": ["object", "null"]},
+    "resume": {"type": "object"}
+  },
+  "additionalProperties": true
+}

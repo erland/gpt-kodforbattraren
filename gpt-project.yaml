@@ -1,0 +1,85 @@
+schema_version: 1
+project:
+  id: kodforbattraren
+  name: Kodförbättraren
+  language: sv
+analysis:
+  profile: zip_first_advanced
+  source: docs/concept-analysis.md
+instructions:
+  canonical: src/instructions/system.md
+  core_contract:
+    enabled: true
+    required_markers:
+    - Förstå först, prioritera därefter och förändra sedan i små verifierbara steg.
+    - Låt faktisk projektstatus styra vilket steg som är nästa
+    - Skilj beteendebevarande refaktorering från funktionella och UX-relaterade beteendeförändringar.
+    - Avstå från refaktorering när tydlig nytta saknas eller risk och kostnad överstiger
+      vinsten.
+    required_runtime_dependencies: []
+    max_required_file_hops: 1
+    knowledge_may_not_be_required_for_core_behavior: true
+knowledge_architecture:
+  canonical_root: knowledge
+  active_files:
+  - knowledge/architecture-pattern-catalog.yaml
+  - knowledge/architecture-patterns.md
+  - knowledge/code-quality-heuristic-catalog.yaml
+  - knowledge/code-quality-refactoring.md
+  - knowledge/github-pr-workflow-policy.yaml
+  - knowledge/github-pr-workflow.md
+  - knowledge/initial-analysis-prioritization-catalog.yaml
+  - knowledge/initial-analysis-prioritization.md
+  - knowledge/refactoring-planning-catalog.yaml
+  - knowledge/refactoring-planning.md
+  - knowledge/refactoring-test-safety-catalog.yaml
+  - knowledge/refactoring-test-safety.md
+  - knowledge/reporting-status-ux.md
+  - knowledge/technology-profile-catalog.yaml
+  - knowledge/technology-profiles.md
+  - knowledge/ux-usability-catalog.yaml
+  - knowledge/ux-usability.md
+  - knowledge/zip-workflow-policy.yaml
+  - knowledge/zip-workflow.md
+runtime:
+  primary: chat_zip
+  chat_zip:
+    enabled: true
+    entrypoint: START-HERE.md
+    status: implemented
+  custom_gpt:
+    enabled: true
+    instruction:
+      mode: compiled
+      max_characters: 8000
+    knowledge:
+      strategy: compiled
+      max_files: 20
+    status: implemented
+development:
+  plan: docs/development-plan.md
+  status: project-status.yaml
+  concept_analysis: docs/concept-analysis.md
+runtime_models:
+  finding_schema: schemas/finding.schema.json
+  refactoring_plan_schema: schemas/refactoring-plan.schema.json
+  work_status_schema: schemas/work-status.schema.json
+  derive_next_step: scripts/derive_next_step.py
+ci:
+  enabled: true
+  default: true
+  planned: false
+release:
+  github:
+    enabled: true
+    default: true
+    planned: false
+    optional: false
+    version_source: github_release_tag
+    workflow: .github/workflows/release.yml
+release_ready:
+  status: true
+  candidate_version: 1.0.0
+  report: docs/release-readiness.md
+  runtime_parity: docs/runtime-parity.md
+  known_limitations: docs/known-limitations.md

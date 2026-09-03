@@ -1,0 +1,27 @@
+schema_version: 1
+catalog: refactoring_planning
+rules:
+  - id: PLAN-001
+    name: Small verifiable steps
+    trigger: A planned change mixes independent responsibilities or verification strategies.
+    action: Split the step until each part has a coherent goal, scope, done criteria and verification.
+  - id: PLAN-002
+    name: Protection before high risk
+    trigger: High-risk behavior has weak or unknown testability.
+    action: Insert a baseline/characterization-test protection step before production refactoring.
+  - id: PLAN-003
+    name: Finding dependencies become step dependencies
+    trigger: Initial analysis records one finding as prerequisite for another.
+    action: Translate the dependency to depends_on for the corresponding implementation steps.
+  - id: PLAN-004
+    name: Do not skip failed verification
+    trigger: Mandatory verification for the current step fails.
+    action: Keep the current step blocked; do not select a later step.
+  - id: PLAN-005
+    name: Source drift requires re-baselining
+    trigger: Current ZIP checksum or Git commit differs materially from the analyzed source snapshot.
+    action: Perform focused reanalysis before implementation and record any plan change.
+  - id: PLAN-006
+    name: Explicit replanning
+    trigger: New evidence changes scope, ordering, feasibility or necessity.
+    action: Record insert/split/merge/reorder/skip/scope_change with reason; preserve completed history.

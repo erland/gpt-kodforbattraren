@@ -1,0 +1,195 @@
+{
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "E2E-01",
+      "mode": "zip",
+      "risk": "high",
+      "must": [
+        "characterization",
+        "small_steps",
+        "baseline"
+      ],
+      "must_not": [
+        "size_only"
+      ]
+    },
+    {
+      "id": "E2E-02",
+      "mode": "zip",
+      "risk": "low",
+      "must": [
+        "no_forced_change"
+      ],
+      "must_not": [
+        "size_only"
+      ]
+    },
+    {
+      "id": "E2E-03",
+      "mode": "zip",
+      "risk": "high",
+      "must": [
+        "semantic_duplication",
+        "verification"
+      ],
+      "must_not": [
+        "cosmetic_priority"
+      ]
+    },
+    {
+      "id": "E2E-04",
+      "mode": "zip",
+      "risk": "medium",
+      "must": [
+        "ux_change",
+        "preserve_input",
+        "verification"
+      ],
+      "must_not": [
+        "label_refactoring"
+      ]
+    },
+    {
+      "id": "E2E-05",
+      "mode": "zip",
+      "risk": "low",
+      "must": [
+        "prefer_simple"
+      ],
+      "must_not": [
+        "pattern_for_pattern_sake"
+      ]
+    },
+    {
+      "id": "E2E-06",
+      "mode": "zip",
+      "risk": "medium",
+      "must": [
+        "known_red",
+        "no_new_regressions"
+      ],
+      "must_not": [
+        "pretend_green"
+      ]
+    },
+    {
+      "id": "E2E-07",
+      "mode": "zip",
+      "risk": "medium",
+      "must": [
+        "block_or_rollback",
+        "not_completed"
+      ],
+      "must_not": [
+        "advance_next"
+      ]
+    },
+    {
+      "id": "E2E-08",
+      "mode": "zip",
+      "risk": "medium",
+      "must": [
+        "resume_state",
+        "derive_next",
+        "complete_zip"
+      ],
+      "must_not": [
+        "conversation_memory_only"
+      ]
+    },
+    {
+      "id": "E2E-09",
+      "mode": "zip",
+      "risk": "medium",
+      "must": [
+        "detect_source_change",
+        "reanalysis_required"
+      ],
+      "must_not": [
+        "blind_apply"
+      ]
+    },
+    {
+      "id": "E2E-10",
+      "mode": "github",
+      "risk": "medium",
+      "must": [
+        "continue_open_pr"
+      ],
+      "must_not": [
+        "parallel_pr"
+      ]
+    },
+    {
+      "id": "E2E-11",
+      "mode": "github",
+      "risk": "medium",
+      "must": [
+        "new_branch_after_merge",
+        "current_default_branch"
+      ],
+      "must_not": [
+        "reuse_merged_branch"
+      ]
+    },
+    {
+      "id": "E2E-12",
+      "mode": "github",
+      "risk": "medium",
+      "must": [
+        "blocked_closed_unmerged"
+      ],
+      "must_not": [
+        "duplicate_pr"
+      ]
+    },
+    {
+      "id": "E2E-13",
+      "mode": "any",
+      "risk": "low",
+      "must": [
+        "read_only"
+      ],
+      "must_not": [
+        "mutate"
+      ]
+    },
+    {
+      "id": "E2E-14",
+      "mode": "any",
+      "risk": "medium",
+      "must": [
+        "execute_exact_next",
+        "verify",
+        "update_status"
+      ],
+      "must_not": [
+        "skip_step"
+      ]
+    },
+    {
+      "id": "E2E-15",
+      "mode": "zip",
+      "risk": "low",
+      "must": [
+        "allow_no_refactoring"
+      ],
+      "must_not": [
+        "invent_work"
+      ]
+    },
+    {
+      "id": "E2E-16",
+      "mode": "any",
+      "risk": "high",
+      "must": [
+        "behavior_risk",
+        "targeted_verification"
+      ],
+      "must_not": [
+        "claim_behavior_preserving"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+name: Build release distributions
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version/tag to use for artifacts (for manual test runs)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release tag
+        if: github.event_name == 'release'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Checkout manual ref
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validation dependencies
+        run: python -m pip install --upgrade -r requirements-ci.txt
+
+      - name: Resolve version
+        id: version
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "release" ]]; then
+            value="${{ github.event.release.tag_name }}"
+          else
+            value="${{ inputs.version }}"
+          fi
+          echo "value=$value" >> "$GITHUB_OUTPUT"
+
+      - name: Validate project
+        run: |
+          python scripts/validate_project_status.py
+          python scripts/validate_runtime_models.py
+          python scripts/check_project_hygiene.py
+          PYTHONDONTWRITEBYTECODE=1 python -m pytest -q -p no:cacheprovider tests/runtime
+
+      - name: Build versioned distributions
+        run: python scripts/build_distributions.py --version "${{ steps.version.outputs.value }}"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kodforbattraren-${{ steps.version.outputs.value }}
+          path: |
+            dist/kodforbattraren-chat-*.zip
+            dist/kodforbattraren-custom-gpt-*.zip
+            dist/release-manifest.json
+          if-no-files-found: error
+
+      - name: Attach distributions to GitHub Release
+        if: github.event_name == 'release'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            dist/kodforbattraren-chat-*.zip \
+            dist/kodforbattraren-custom-gpt-*.zip \
+            dist/release-manifest.json \
+            --clobber

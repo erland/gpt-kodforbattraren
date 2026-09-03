@@ -1,0 +1,25 @@
+schema_version: 1
+id: F-001
+title: OrderService blandar domänlogik och persistence
+category: architecture
+description: OrderService ansvarar både för prisregler och direkt databashantering, vilket ökar kopplingen och försvårar isolerade tester.
+evidence:
+  - path: backend/src/main/java/example/OrderService.java
+    symbol: OrderService
+    line_start: 18
+    line_end: 146
+    observation: Klassen innehåller både beräkningsregler och EntityManager-anrop.
+priority: high
+confidence: high
+impact:
+  failure_risk: medium
+  change_cost: high
+  architectural_leverage: high
+  user_impact: low
+status: planned
+change_classification: refactoring
+recommended_action: Skydda prisberäkningen med tester och separera därefter persistence från domänlogiken i två små steg.
+rationale: Förbättrar testbarhet och minskar risken att databasändringar påverkar affärsregler.
+related_step_ids:
+  - R-001
+  - R-002

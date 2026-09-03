@@ -1,0 +1,20 @@
+schema_version: 1
+id: F-002
+title: Persistence är sammanblandad med orderlogik
+category: architecture
+description: Domänbeslut och databasdetaljer ändras tillsammans.
+evidence:
+  - path: src/main/java/OrderService.java
+    observation: JPA-anrop och affärsregler ligger i samma flöde.
+priority: high
+confidence: high
+impact:
+  failure_risk: medium
+  change_cost: medium
+  architectural_leverage: high
+  user_impact: low
+status: open
+change_classification: refactoring
+recommended_action: Separera persistence från orderlogik med minsta nödvändiga seam.
+rationale: Förbättrar testbarhet och minskar koppling.
+related_step_ids: []

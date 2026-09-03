@@ -1,0 +1,21 @@
+version: 1
+modes:
+  continue_open_pr:
+    requires: [active_pr_open, same_plan, relevant_branch]
+  create_new_pr_after_merge:
+    requires: [previous_pr_merged, refreshed_default_branch]
+  create_first_pr:
+    requires: [no_active_pr]
+  reanalysis_required:
+    trigger: relevant_base_change_invalidates_assumptions
+  blocked_closed_unmerged:
+    trigger: previous_pr_closed_without_merge
+  blocked_conflict_or_divergence:
+    trigger: conflict_or_unclear_divergence
+rules:
+  direct_push_default_branch: forbidden
+  automatic_merge_without_explicit_request: forbidden
+  force_push_default: forbidden
+  overwrite_user_commits: forbidden
+  refresh_base_after_merge: required
+  inspect_actual_pr_state_before_step: required

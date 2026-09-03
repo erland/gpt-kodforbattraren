@@ -1,0 +1,24 @@
+schema_version: 1
+scope:
+  description: Order backend
+  coverage: full
+  not_reviewed: []
+inventory:
+  application_types: [backend]
+  languages_frameworks: [Java, Quarkus]
+baseline:
+  maintainability: {level: weak, confidence: high, rationale: "Blandade ansvar."}
+  architecture: {level: adequate, confidence: medium, rationale: "Tydliga moduler men läckande persistence."}
+  testability: {level: weak, confidence: high, rationale: "Central logik saknar fokuserade tester."}
+  developer_experience: {level: adequate, confidence: medium, rationale: "Build är reproducerbar."}
+  usability: {level: not_applicable, confidence: high, rationale: "Backend-scope."}
+  accessibility: {level: not_applicable, confidence: high, rationale: "Backend-scope."}
+findings: [F-001, F-002]
+dependencies:
+  - before: F-001
+    after: F-002
+    reason: Stabiliserad orderlogik behövs före persistence-separation.
+non_actions:
+  - observation: Stor mapper-fil
+    decision: leave_unchanged
+    reason: Sammanhållen genererad mappingkod och låg förändringsfrekvens.

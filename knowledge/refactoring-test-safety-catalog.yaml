@@ -1,0 +1,59 @@
+schema_version: 1
+principles:
+  establish_baseline_before_risky_change: true
+  distinguish_existing_failures_from_regressions: true
+  verification_is_risk_based: true
+  characterization_tests_protect_observed_behavior: true
+  do_not_weaken_tests_to_make_refactoring_pass: true
+  prefer_smallest_sufficient_safety_net: true
+baseline_states:
+  - green
+  - known_red
+  - unknown
+  - not_applicable
+risk_levels:
+  low:
+    examples: ["local rename", "proven dead code removal", "isolated internal simplification"]
+    expected_checks: ["compile_or_typecheck", "focused_fast_tests", "lint_if_relevant"]
+  medium:
+    examples: ["move responsibility between modules", "extract component", "change dependency wiring"]
+    expected_checks: ["baseline", "focused_behavior_tests", "relevant_integration_tests", "build_typecheck_lint"]
+  high:
+    examples: ["central business rule", "transaction semantics", "concurrency", "public API", "critical user flow"]
+    expected_checks: ["explicit_baseline", "characterization_if_needed", "contract_and_edge_regression", "integration_or_e2e_when_useful", "smaller_or_preparatory_step"]
+characterization:
+  use_when:
+    - "legacy behavior lacks sufficient tests"
+    - "observable contract exists but internals are hard to isolate"
+    - "refactoring must preserve behavior before correctness is reconsidered"
+  avoid_when:
+    - "test only mirrors private implementation details"
+    - "user explicitly intends a behavior change and old behavior should not be preserved"
+  rules:
+    - "prefer observable contract over internals"
+    - "protect only the behavior relevant to the planned change"
+    - "document suspicious behavior that is intentionally frozen"
+preexisting_failures:
+  rules:
+    - "record failures before production change"
+    - "do not claim green if the same failure remains"
+    - "no new failures are allowed without explicit scope change"
+    - "compare failure identity and symptoms, not just total count"
+stop_criteria:
+  - "new relevant regression"
+  - "baseline cannot be reproduced"
+  - "unplanned behavior change becomes necessary"
+  - "diff expands beyond independently reviewable scope"
+  - "high-risk change lacks reliable safety net"
+  - "environment or dependency makes verification unreliable"
+  - "branch assumptions are invalidated"
+rollback_criteria:
+  - "regression cannot be isolated within step scope"
+  - "fix attempts create unrelated changes"
+  - "required safety work is larger than the current step"
+  - "chosen refactoring path is based on a false assumption"
+verification_outcomes:
+  - pass
+  - pass_with_known_red
+  - blocked
+  - rolled_back

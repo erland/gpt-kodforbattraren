@@ -1,0 +1,21 @@
+schema_version: 1
+id: F-001
+title: Orderberäkning saknar beteendeskydd
+category: testability
+description: Central beräkning är svår att ändra säkert.
+evidence:
+  - path: src/main/java/OrderService.java
+    symbol: calculate
+    observation: Flera affärsgrenar utan fokuserade regressionstester.
+priority: high
+confidence: high
+impact:
+  failure_risk: high
+  change_cost: medium
+  architectural_leverage: high
+  user_impact: high
+status: open
+change_classification: refactoring
+recommended_action: Etablera fokuserat beteendeskydd för orderberäkningen.
+rationale: Minskar risk för kommande strukturändringar.
+related_step_ids: []

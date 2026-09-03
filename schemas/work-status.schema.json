@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodforbattraren.local/schemas/work-status.schema.json",
+  "title": "Kodförbättraren Work Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "plan_id", "source", "progress", "findings", "blockers",
+    "plan_changes", "delivery", "updated_at"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "plan_id": {"type": "string", "minLength": 1},
+    "source": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["mode", "zip"],
+          "properties": {
+            "mode": {"const": "zip"},
+            "zip": {
+              "type": "object", "additionalProperties": false,
+              "required": ["base_name", "base_sha256"],
+              "properties": {
+                "base_name": {"type": "string", "minLength": 1},
+                "base_sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+                "last_output_name": {"type": ["string", "null"]},
+                "last_output_sha256": {"type": ["string", "null"], "pattern": "^[A-Fa-f0-9]{64}$"}
+              }
+            }
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["mode", "github"],
+          "properties": {
+            "mode": {"const": "github"},
+            "github": {
+              "type": "object", "additionalProperties": false,
+              "required": ["repository", "default_branch", "base_sha", "working_branch", "pull_request"],
+              "properties": {
+                "repository": {"type": "string", "minLength": 1},
+                "default_branch": {"type": "string", "minLength": 1},
+                "base_sha": {"type": "string", "minLength": 7},
+                "working_branch": {"type": ["string", "null"]},
+                "pull_request": {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["number", "state", "merged"],
+                  "properties": {
+                    "number": {"type": ["integer", "null"], "minimum": 1},
+                    "state": {"enum": ["none", "open", "closed"]},
+                    "merged": {"type": "boolean"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "progress": {
+      "type": "object", "additionalProperties": false,
+      "required": ["current_step_id", "completed_step_ids", "skipped_step_ids", "blocked_step_ids"],
+      "properties": {
+        "current_step_id": {"type": ["string", "null"], "pattern": "^R-[0-9]{3,}$"},
+        "completed_step_ids": {"type": "array", "items": {"type": "string", "pattern": "^R-[0-9]{3,}$"}, "uniqueItems": true},
+        "skipped_step_ids": {"type": "array", "items": {"type": "string", "pattern": "^R-[0-9]{3,}$"}, "uniqueItems": true},
+        "blocked_step_ids": {"type": "array", "items": {"type": "string", "pattern": "^R-[0-9]{3,}$"}, "uniqueItems": true}
+      }
+    },
+    "findings": {
+      "type": "object",
+      "additionalProperties": {"enum": ["open", "planned", "in_progress", "resolved", "accepted", "wont_fix", "blocked"]}
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "status", "description"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["open", "resolved"]},
+          "step_id": {"type": ["string", "null"], "pattern": "^R-[0-9]{3,}$"},
+          "description": {"type": "string", "minLength": 1},
+          "resolution": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "plan_changes": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["at", "type", "reason"],
+        "properties": {
+          "at": {"type": "string", "format": "date-time"},
+          "type": {"enum": ["insert", "split", "merge", "reorder", "skip", "scope_change"]},
+          "step_ids": {"type": "array", "items": {"type": "string", "pattern": "^R-[0-9]{3,}$"}},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "delivery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["last_completed_step_id", "verification_status"],
+      "properties": {
+        "last_completed_step_id": {"type": ["string", "null"], "pattern": "^R-[0-9]{3,}$"},
+        "verification_status": {"enum": ["not_run", "pass", "warning", "failed", "blocked"]},
+        "verification_summary": {"type": "string"}
+      }
+    },
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}

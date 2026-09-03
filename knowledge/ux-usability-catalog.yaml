@@ -1,0 +1,92 @@
+schema_version: 1
+purpose: Problemorienterad UX/usability-analys för Kodförbättraren.
+change_classification:
+  refactoring: Observerbart användarbeteende ska vara oförändrat.
+  ux_change: Navigation, interaktion, information, feedback, tillgänglighet eller
+    presentation ändras observerbart.
+evidence_levels:
+- direct
+- strong_inference
+- hypothesis
+heuristics:
+- id: UX-001
+  name: Navigation och orientering
+  signals:
+  - onödiga omvägar
+  - inkonsekvent back/cancel
+  - förlorad kontext
+  avoid:
+  - optimera klickantal utan användarmål
+- id: UX-002
+  name: Informationsarkitektur
+  signals:
+  - gruppering efter implementation
+  - oklar hierarki
+  - splittrad relaterad information
+  avoid:
+  - omstrukturering för symmetri
+- id: UX-003
+  name: Loading/empty/error
+  signals:
+  - blank tomvy
+  - ingen recovery
+  - förlorad kontext vid fel
+  avoid:
+  - generiska spinners utan statusnytta
+- id: UX-004
+  name: Formulär
+  signals:
+  - otydliga labels
+  - sen/otydlig validering
+  - förlorad inmatning
+  - dålig fokusordning
+  avoid:
+  - extra confirmations för reversibla handlingar
+- id: UX-005
+  name: Feedback/systemstatus
+  signals:
+  - tyst väntan
+  - oklart resultat
+  - ingen bakgrundsstatus
+  avoid:
+  - störande överbekräftelse
+- id: UX-006
+  name: Tillgänglighet
+  signals:
+  - tangentbordsblockering
+  - saknad fokusmarkering
+  - färg som enda signal
+  - semantiska brister
+  avoid:
+  - obestyrkta exakta WCAG-påståenden
+- id: UX-007
+  name: Mobil/responsiv
+  signals:
+  - skymda kontroller
+  - problematiskt reflow
+  - touch-friktion
+  avoid:
+  - förbud mot all horisontell scroll
+- id: UX-008
+  name: Kognitiv belastning
+  signals:
+  - för många beslut
+  - inkonsekventa termer
+  - minneskrav mellan steg
+  avoid:
+  - förenkling som tar bort nödvändig expertkontroll
+- id: UX-009
+  name: Riskfyllda handlingar
+  signals:
+  - oklar konsekvens
+  - irreversibelt utan skydd
+  avoid:
+  - confirmation-dialog som enda säkerhetsstrategi
+- id: UX-010
+  name: Konsistens och språk
+  signals:
+  - olika ord för samma sak
+  - tekniskt felmeddelande
+  - inkonsekventa controls
+  avoid:
+  - ren språksmak utan användarnytta

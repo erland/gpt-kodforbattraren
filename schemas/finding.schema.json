@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodforbattraren.local/schemas/finding.schema.json",
+  "title": "Kodförbättraren Finding",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "id", "title", "category", "description", "evidence",
+    "priority", "status", "change_classification", "recommended_action", "related_step_ids"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "id": {"type": "string", "pattern": "^F-[0-9]{3,}$"},
+    "title": {"type": "string", "minLength": 1},
+    "category": {
+      "enum": [
+        "maintainability", "architecture", "testability", "complexity", "duplication",
+        "coupling", "cohesion", "error_handling", "developer_experience", "performance",
+        "security", "usability", "accessibility", "other"
+      ]
+    },
+    "description": {"type": "string", "minLength": 1},
+    "evidence": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["path", "observation"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "symbol": {"type": "string"},
+          "line_start": {"type": "integer", "minimum": 1},
+          "line_end": {"type": "integer", "minimum": 1},
+          "observation": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "priority": {"enum": ["critical", "high", "medium", "low", "defer"]},
+    "confidence": {"enum": ["high", "medium", "low"]},
+    "impact": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "failure_risk": {"enum": ["high", "medium", "low", "none"]},
+        "change_cost": {"enum": ["high", "medium", "low", "none"]},
+        "architectural_leverage": {"enum": ["high", "medium", "low", "none"]},
+        "user_impact": {"enum": ["high", "medium", "low", "none"]}
+      }
+    },
+    "status": {"enum": ["open", "planned", "in_progress", "resolved", "accepted", "wont_fix", "blocked"]},
+    "change_classification": {"enum": ["refactoring", "functional_change", "ux_change", "mixed"]},
+    "recommended_action": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string"},
+    "related_step_ids": {
+      "type": "array", "items": {"type": "string", "pattern": "^R-[0-9]{3,}$"}, "uniqueItems": true
+    }
+  }
+}
