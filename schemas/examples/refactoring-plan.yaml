@@ -1,0 +1,71 @@
+schema_version: 1
+plan_id: demo-refactoring-2026-09
+project:
+  name: Demo Shop
+  repository: example/demo-shop
+source_snapshot:
+  mode: zip
+  captured_at: "2026-09-03T17:00:00Z"
+  base_identifier: demo-shop.zip:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+objectives:
+  - Minska kopplingen mellan domänlogik och persistence.
+  - Göra prisberäkningen säkert refaktorerbar.
+constraints:
+  - Bevara externt observerbart beteende under R-001 och R-002.
+steps:
+  - id: R-001
+    order: 1
+    title: Skydda prisberäkningen med characterization tests
+    goal: Dokumentera nuvarande beteende före strukturella ändringar.
+    status: completed
+    change_classification: refactoring
+    finding_ids: [F-001]
+    depends_on: []
+    scope:
+      - OrderService price calculation
+    out_of_scope:
+      - Databasstruktur
+    risk: low
+    done_when:
+      - Kritiska prisfall täcks av tester.
+      - Testsviten är grön.
+    verification:
+      - ./mvnw test
+  - id: R-002
+    order: 2
+    title: Separera persistence från OrderService
+    goal: Flytta databasansvaret utan att ändra orderbeteendet.
+    status: ready
+    change_classification: refactoring
+    finding_ids: [F-001]
+    depends_on: [R-001]
+    scope:
+      - OrderService
+      - OrderRepository
+    out_of_scope:
+      - UI
+      - API-kontrakt
+    risk: medium
+    done_when:
+      - OrderService innehåller inte direkta EntityManager-anrop.
+      - Befintliga tester är gröna.
+    verification:
+      - ./mvnw test
+  - id: R-003
+    order: 3
+    title: Förenkla felmeddelandet i checkout
+    goal: Ge användaren tydligare återkoppling när ordern inte kan sparas.
+    status: planned
+    change_classification: ux_change
+    finding_ids: []
+    depends_on: [R-002]
+    scope:
+      - Checkout error state
+    out_of_scope:
+      - Backend error model
+    risk: low
+    done_when:
+      - Felmeddelandet förklarar vad användaren kan göra härnäst.
+    verification:
+      - npm test
+      - Manuell kontroll av checkout-flödet

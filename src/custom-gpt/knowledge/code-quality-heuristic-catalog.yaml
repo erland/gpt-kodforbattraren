@@ -1,0 +1,98 @@
+schema_version: 1
+heuristics:
+  - id: CQ-01
+    name: Separation of Concerns / Single Responsibility
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [multiple_change_reasons, boundary_mixing, disjoint_dependencies, hard_to_isolate]
+    counter_signals: [cohesive_orchestration, single_domain_concept]
+  - id: CQ-02
+    name: Low cohesion
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [disjoint_state_usage, unrelated_method_clusters, vague_container_name]
+    counter_signals: [single_algorithm_or_protocol, shared_invariant]
+  - id: CQ-03
+    name: Harmful coupling
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [cyclic_dependency, infrastructure_leakage, shotgun_surgery, excessive_test_setup]
+    counter_signals: [necessary_collaboration, stable_boundary]
+  - id: CQ-04
+    name: Semantic duplication
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [same_business_rule, synchronized_changes, repeated_protocol_logic]
+    counter_signals: [accidental_similarity, independent_domains, abstraction_requires_flags]
+  - id: CQ-05
+    name: Oversized unit
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [multiple_change_reasons, low_cohesion, mixed_abstraction_levels, hard_to_test]
+    counter_signals: [large_but_cohesive, well_tested, split_increases_navigation]
+  - id: CQ-06
+    name: Complex function/control flow
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [deep_nesting, many_independent_branches, mixed_side_effects, mutable_state_coupling]
+    counter_signals: [linear_domain_algorithm, extracted_helpers_would_fragment]
+  - id: CQ-07
+    name: Naming/API ambiguity
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [generic_names, boolean_blindness, inconsistent_vocabulary, confusing_parameter_order]
+    counter_signals: [local_convention_is_clear]
+  - id: CQ-08
+    name: Primitive obsession / weak domain type
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [repeated_validation, invalid_states_representable, same_primitive_parameters]
+    counter_signals: [trivial_value_no_rules, wrapper_adds_no_semantics]
+  - id: CQ-09
+    name: Data clumps / long parameter list
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [same_values_travel_together, clear_domain_concept, error_prone_calls]
+    counter_signals: [single_call_site, parameter_object_only_hides_arguments]
+  - id: CQ-10
+    name: Feature envy / misplaced responsibility
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [uses_foreign_data_heavily, repeated_foreign_structure_interpretation, changes_track_foreign_type]
+    counter_signals: [moving_would_create_cycle, orchestration_is_intentional]
+  - id: CQ-11
+    name: Shotgun surgery / divergent change
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [one_concept_many_files, one_module_many_change_reasons]
+    counter_signals: [generated_code, intentional_cross_cutting_registration]
+  - id: CQ-12
+    name: Dead code / speculative generality
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [no_references_and_no_dynamic_entrypoint, unused_extension_point, single_stable_impl_with_ceremony]
+    counter_signals: [reflection, plugin_registration, external_api, serialization]
+  - id: CQ-13
+    name: Over-abstraction / unnecessary complexity
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [delegation_layers, generic_framework_for_simple_case, flags_to_support_reuse, pattern_without_problem]
+    counter_signals: [real_boundary, multiple_variants, isolation_value]
+  - id: CQ-14
+    name: Low testability
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [business_logic_bound_to_io, global_state, nondeterminism, full_app_required_for_local_rule]
+    counter_signals: [integration_behavior_is_the_subject, simple_end_to_end_test_is_cheaper]
+  - id: CQ-15
+    name: Error handling complexity
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [swallowed_errors, inconsistent_translation, ambiguous_sentinels, duplicated_retry_logic]
+    counter_signals: [different_errors_have_intentionally_different_policies]
+  - id: CQ-16
+    name: Mixed abstraction levels
+    requires_context: true
+    mechanical_threshold: false
+    positive_signals: [domain_intent_mixed_with_sql_http_bytes, low_level_details_dominate_use_case]
+    counter_signals: [thin_adapter_is_clear, wrapper_would_be_ceremonial]

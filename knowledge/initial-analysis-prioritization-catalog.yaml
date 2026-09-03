@@ -1,0 +1,56 @@
+schema_version: 1
+purpose: Konsekvent initial analys och prioritering före en refaktoreringsserie.
+analysis_mode: read_only_product_source
+inventory:
+  - application_types
+  - languages_frameworks
+  - build_package_tools
+  - tests_lint_typecheck
+  - persistence_integrations
+  - runtime_deployment
+  - module_boundaries
+  - entrypoints_core_flows
+  - relevant_documentation
+prioritization_dimensions:
+  severity: [critical, high, medium, low, none]
+  change_risk: [high, medium, low, unknown]
+  expected_benefit: [high, medium, low, none, unknown]
+  effort: [small, medium, large, unknown]
+  leverage: [high, medium, low, none, unknown]
+baseline_dimensions:
+  - maintainability
+  - architecture
+  - testability
+  - developer_experience
+  - usability
+  - accessibility
+baseline_levels: [strong, adequate, weak, unknown, not_applicable]
+rules:
+  - id: ANA-001
+    name: Evidence before finding
+    require: Concrete project evidence and system-specific consequence.
+    avoid: Converting a heuristic or metric directly into a finding.
+  - id: ANA-002
+    name: Contextual prioritization
+    require: Severity, change risk, expected benefit, effort and leverage are considered.
+    avoid: Ranking by smell count, file size or aesthetics alone.
+  - id: ANA-003
+    name: Explicit non-actions
+    require: Record relevant observations that should be deferred or left unchanged.
+    avoid: Turning analysis into an exhaustive cleanup backlog.
+  - id: ANA-004
+    name: Dependency-aware ordering
+    require: State why one action depends on another when such dependency exists.
+    avoid: Sequential numbering without causal dependency.
+  - id: ANA-005
+    name: Calibrated baseline
+    require: Evidence, confidence and unknown/not_applicable when evidence is insufficient.
+    avoid: Presenting diagnostic levels as precise scientific scores.
+  - id: ANA-006
+    name: Scope honesty
+    require: Document sampling and unreviewed scope for large projects.
+    avoid: Claiming full coverage from partial inspection.
+  - id: ANA-007
+    name: Analysis before modification
+    require: Keep production source unchanged during broad initial analysis.
+    avoid: Sneaking opportunistic refactors into analysis.

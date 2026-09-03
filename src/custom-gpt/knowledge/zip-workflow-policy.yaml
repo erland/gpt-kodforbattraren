@@ -1,0 +1,35 @@
+schema_version: 1
+metadata_dir: .kodforbattraren
+safe_auto_exclude:
+  directory_names:
+  - __pycache__
+  - .pytest_cache
+  - .mypy_cache
+  - .ruff_cache
+  file_names:
+  - .DS_Store
+  - .coverage
+  - .eslintcache
+  suffixes:
+  - .pyc
+  - .pyo
+never_exclude_by_name_only:
+- dist
+- build
+- target
+- out
+- node_modules
+- vendor
+security:
+  reject_absolute_paths: true
+  reject_parent_escape: true
+  reject_symlinks: true
+  reject_special_files: true
+  max_entries_default: 100000
+  max_total_uncompressed_bytes_default: 2147483648
+  max_single_file_uncompressed_bytes_default: 536870912
+resume:
+  status_primary: .kodforbattraren/work-status.yaml
+  plan_primary: .kodforbattraren/refactoring-plan.yaml
+  human_status: .kodforbattraren/STATUS.md
+  manifest: .kodforbattraren/source-manifest.json

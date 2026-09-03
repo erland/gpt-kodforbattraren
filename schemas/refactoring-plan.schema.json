@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kodforbattraren.local/schemas/refactoring-plan.schema.json",
+  "title": "Kodförbättraren Refactoring Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plan_id", "project", "source_snapshot", "objectives", "steps"],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "plan_id": {"type": "string", "minLength": 1},
+    "project": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "repository": {"type": "string"}
+      }
+    },
+    "source_snapshot": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "captured_at"],
+      "properties": {
+        "mode": {"enum": ["zip", "github"]},
+        "captured_at": {"type": "string", "format": "date-time"},
+        "base_identifier": {"type": "string", "description": "ZIP checksum/name or Git commit SHA."}
+      }
+    },
+    "objectives": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "steps": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": [
+          "id", "order", "title", "goal", "status", "change_classification",
+          "finding_ids", "depends_on", "risk", "done_when", "verification"
+        ],
+        "properties": {
+          "id": {"type": "string", "pattern": "^R-[0-9]{3,}$"},
+          "order": {"type": "integer", "minimum": 1},
+          "title": {"type": "string", "minLength": 1},
+          "goal": {"type": "string", "minLength": 1},
+          "status": {"enum": ["planned", "ready", "in_progress", "completed", "blocked", "skipped"]},
+          "change_classification": {"enum": ["refactoring", "functional_change", "ux_change", "mixed"]},
+          "finding_ids": {"type": "array", "items": {"type": "string", "pattern": "^F-[0-9]{3,}$"}, "uniqueItems": true},
+          "depends_on": {"type": "array", "items": {"type": "string", "pattern": "^R-[0-9]{3,}$"}, "uniqueItems": true},
+          "scope": {"type": "array", "items": {"type": "string"}},
+          "out_of_scope": {"type": "array", "items": {"type": "string"}},
+          "risk": {"enum": ["high", "medium", "low"]},
+          "done_when": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "verification": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "notes": {"type": "string"}
+        }
+      }
+    }
+  }
+}

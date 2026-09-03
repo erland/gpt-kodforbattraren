@@ -1,0 +1,50 @@
+schema_version: 1
+project:
+  id: kodforbattraren
+  name: Kodförbättraren
+plan:
+  path: docs/development-plan.md
+  total_steps: 20
+progress:
+  current_phase: release-ready
+  current_step: null
+  last_completed_step: 20
+  completed_steps:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+    - 20
+  skipped_steps: []
+  inserted_steps: []
+state:
+  overall: release_ready
+  blocking_issues: []
+  warnings:
+    - Custom GPT kan bara skapa branch/commit/PR när en faktisk GitHub write-capability är konfigurerad.
+    - Full semantisk E2E-kvalitet måste även verifieras på verkliga användarprojekt; den automatiska sviten verifierar kontrakt, modeller och beslutslogik.
+next_step: null
+resume:
+  supported: true
+  required_files:
+    - gpt-project.yaml
+    - project-status.yaml
+    - docs/development-plan.md
+    - STATUS.md
+    - PROJECT.md
+  human_readable_status: STATUS.md

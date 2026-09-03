@@ -1,0 +1,70 @@
+schema_version: 1
+principles:
+  problem_before_pattern: true
+  solid_is_heuristic: true
+  prefer_minimum_sufficient_structure: true
+  remove_patterns_when_cost_exceeds_value: true
+patterns:
+  - id: AP-01
+    name: Module/layer boundary
+    useful_when: ["unstable details leak into stable policy", "cross-module coupling raises change cost"]
+    avoid_when: ["extra boundary only adds forwarding", "small cohesive feature has no isolation need"]
+  - id: AP-02
+    name: Ports and Adapters
+    useful_when: ["core logic needs I/O isolation", "multiple or meaningful adapters exist"]
+    avoid_when: ["simple CRUD", "one-interface-per-class architecture"]
+  - id: AP-03
+    name: Strategy
+    useful_when: ["independent behavior variants grow", "conditionals repeatedly select algorithms"]
+    avoid_when: ["few stable branches", "function or lookup is simpler"]
+  - id: AP-04
+    name: State
+    useful_when: ["behavior varies by state across many operations", "transitions are a first-class concept"]
+    avoid_when: ["enum plus transition function stays clearer"]
+  - id: AP-05
+    name: Factory
+    useful_when: ["creation contains policy or complex construction", "implementation choice must be encapsulated"]
+    avoid_when: ["factory only forwards to constructor"]
+  - id: AP-06
+    name: Adapter
+    useful_when: ["external or incompatible API needs isolation", "vendor types should not leak"]
+    avoid_when: ["internal APIs already align"]
+  - id: AP-07
+    name: Facade
+    useful_when: ["consumers coordinate complex subsystem", "internal surface should be hidden"]
+    avoid_when: ["facade becomes generic manager/god object"]
+  - id: AP-08
+    name: Repository
+    useful_when: ["persistence details leak into domain/use cases", "stable persistence vocabulary helps"]
+    avoid_when: ["pure pass-through CRUD wrapper"]
+  - id: AP-09
+    name: Command
+    useful_when: ["operations need queueing, replay, undo or common pipeline"]
+    avoid_when: ["ordinary direct method call is enough"]
+  - id: AP-10
+    name: Observer/PubSub
+    useful_when: ["multiple independent reactions need loose coupling"]
+    avoid_when: ["simple synchronous coordination", "hidden flow costs exceed decoupling value"]
+  - id: AP-11
+    name: Decorator/Middleware/Pipeline
+    useful_when: ["orthogonal behavior composes across operations"]
+    avoid_when: ["deep ordering-sensitive chains become opaque"]
+  - id: AP-12
+    name: Template Method
+    useful_when: ["stable algorithm has few controlled variations"]
+    avoid_when: ["hierarchy accumulates special cases", "composition is clearer"]
+anti_patterns:
+  - Pattern cargo cult
+  - Interface explosion
+  - Pass-through layer cake
+  - Application-specific mini-framework
+  - Configuration over code without need
+  - Inheritance taxonomy without substitutability
+  - Premature distributed architecture
+simplification_signals:
+  - "variation point disappeared"
+  - "multiple implementations became one"
+  - "layer only forwards"
+  - "abstraction is harder to understand than implementation"
+  - "pattern adds navigation without isolation"
+  - "generic extension points obscure feature flow"

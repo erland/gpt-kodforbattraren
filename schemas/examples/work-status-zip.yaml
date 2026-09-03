@@ -1,0 +1,23 @@
+schema_version: 1
+plan_id: demo-refactoring-2026-09
+source:
+  mode: zip
+  zip:
+    base_name: demo-shop-step-1.zip
+    base_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    last_output_name: demo-shop-step-1.zip
+    last_output_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+progress:
+  current_step_id: null
+  completed_step_ids: [R-001]
+  skipped_step_ids: []
+  blocked_step_ids: []
+findings:
+  F-001: planned
+blockers: []
+plan_changes: []
+delivery:
+  last_completed_step_id: R-001
+  verification_status: pass
+  verification_summary: Characterization tests added; ./mvnw test passed.
+updated_at: "2026-09-03T17:10:00Z"

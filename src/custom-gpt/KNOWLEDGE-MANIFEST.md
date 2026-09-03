@@ -1,0 +1,21 @@
+# Knowledge-manifest
+
+- `architecture-pattern-catalog.yaml`
+- `architecture-patterns.md`
+- `code-quality-heuristic-catalog.yaml`
+- `code-quality-refactoring.md`
+- `github-pr-workflow-policy.yaml`
+- `github-pr-workflow.md`
+- `initial-analysis-prioritization-catalog.yaml`
+- `initial-analysis-prioritization.md`
+- `refactoring-planning-catalog.yaml`
+- `refactoring-planning.md`
+- `refactoring-test-safety-catalog.yaml`
+- `refactoring-test-safety.md`
+- `reporting-status-ux.md`
+- `technology-profile-catalog.yaml`
+- `technology-profiles.md`
+- `ux-usability-catalog.yaml`
+- `ux-usability.md`
+- `zip-workflow-policy.yaml`
+- `zip-workflow.md`

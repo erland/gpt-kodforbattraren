@@ -1,0 +1,27 @@
+schema_version: 1
+plan_id: demo-refactoring-2026-09
+source:
+  mode: github
+  github:
+    repository: example/demo-shop
+    default_branch: main
+    base_sha: 1234567890abcdef
+    working_branch: refactor/r-002-order-persistence
+    pull_request:
+      number: 42
+      state: open
+      merged: false
+progress:
+  current_step_id: R-002
+  completed_step_ids: [R-001]
+  skipped_step_ids: []
+  blocked_step_ids: []
+findings:
+  F-001: in_progress
+blockers: []
+plan_changes: []
+delivery:
+  last_completed_step_id: R-001
+  verification_status: not_run
+  verification_summary: R-002 pågår i PR 42.
+updated_at: "2026-09-03T17:15:00Z"

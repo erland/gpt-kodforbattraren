@@ -1,0 +1,41 @@
+schema_version: 1
+profiles:
+  java-quarkus:
+    combine_with: []
+    strong_signals:
+      - file: pom.xml
+        contains_any: [io.quarkus, quarkus-maven-plugin]
+      - file_glob: build.gradle*
+        contains_any: [io.quarkus]
+    preferred_command_sources: [maven_wrapper, gradle_wrapper, pom, gradle, ci]
+    guardrails:
+      - do_not_switch_blocking_reactive_as_refactoring
+      - do_not_upgrade_quarkus_without_explicit_motive
+      - preserve_transaction_and_cdi_semantics
+  javascript-typescript:
+    combine_with: []
+    strong_signals:
+      - file: package.json
+      - file_glob: tsconfig*.json
+    preferred_command_sources: [package_json_scripts, lockfile, package_manager_field, ci]
+    guardrails:
+      - do_not_change_package_manager_incidentally
+      - do_not_change_module_system_incidentally
+      - do_not_upgrade_dependencies_for_modernity
+  react:
+    combine_with: [javascript-typescript]
+    strong_signals:
+      - file: package.json
+        dependency_any: [react, react-dom]
+    preferred_command_sources: [package_json_scripts, ci]
+    guardrails:
+      - component_size_is_not_automatic_problem
+      - observable_ui_change_is_ux_change
+      - do_not_add_memoization_without_evidence
+  generic-backend-web:
+    fallback: true
+    preferred_command_sources: [project_manifest, wrappers, makefile, taskfile, ci]
+    guardrails:
+      - do_not_invent_layers_or_ports
+      - preserve_error_timeout_retry_semantics
+      - unknown_verification_must_be_reported
