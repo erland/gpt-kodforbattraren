@@ -65,6 +65,9 @@ jobs:
       - name: Validate release readiness
         run: python scripts/validate_release_readiness.py
 
+      - name: Validate workflow parity
+        run: python scripts/validate_workflow_parity.py
+
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
