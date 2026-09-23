@@ -520,3 +520,59 @@ Planen är vägledande. Om ett steg upptäcker ett blockerande fel, bristande ru
 ## Första implementation efter denna plan
 
 Nästa rekommenderade steg är **Steg 3 – Skapa canonical projektstruktur**. Det är då den första kompletta projekt-ZIP:en ska skapas. Därefter ska varje genomfört steg avslutas med verifierad status, hygiene-bedömning och en ny komplett projekt-ZIP.
+
+
+---
+
+### Steg 21 – GPT Byggaren 1.5-kontrakt och modellrobust kärna
+
+**Mål:** Migrera Kodförbättrarens canonical kontrakt till GPT Byggaren 1.5.0 utan att ändra domänbeteendet.
+
+**Leverabler:**
+- capability-, artifact-, workspace/state- och tool-kontrakt,
+- stateful modellrobust profil,
+- operativ kärna och auktoritativ status,
+- modellkompatibilitetsscenarier,
+- explicit bedömning av fem registrerade runtimes.
+
+**Klart när:**
+- befintlig CI är grön,
+- kärnflöden för ZIP/GitHub är oförändrade,
+- 1.5-kontrakten är lintbara och spårbara.
+
+### Steg 22 – Anpassa distributioner och bygg OpenCode
+
+**Mål:** Låta Chat, Custom GPT och OpenCode härledas från samma 1.5-kontrakt.
+
+**Leverabler:**
+- runtime-kontrakt i aktiva distributioner,
+- verifierad Custom GPT-kompilering med 1.5-kärnan,
+- OpenCode-distribution med AGENTS.md, runtime-contract och relevant skill/workspace-stöd,
+- tydlig dokumentation av värdverktyg kontra paketerade verktyg.
+
+**Klart när:**
+- Chat, Custom GPT och OpenCode validerar,
+- kritiska kärnregler finns i alla aktiva runtimes.
+
+### Steg 23 – Generaliserad runtime parity och release readiness
+
+**Mål:** Generalisera parity/readiness till GPT Byggaren 1.5-modellen.
+
+**Leverabler:**
+- parity för behavior, capability, artifact, workspace_state och tool,
+- explicit status för alla fem runtimes,
+- release-readiness som blockerar vid drift mellan runtimebeslut, CI och release.
+
+**Klart när:**
+- tre aktiva runtimes är verifierade,
+- reducerade/inaktiva runtimes har explicit motivering,
+- parity/readiness är blockerande CI-gates.
+
+### Steg 24 – Slutvalidera migreringen och releasekedjan
+
+**Mål:** Verifiera full regression, distributionsbyggen, CI/release-paritet och releaseartefakter.
+
+**Klart när:**
+- alla aktiva distributioner och gates passerar,
+- dokumentationen beskriver 1.5-arkitekturen,
+- projektet är redo att mergeas och releasas.
