@@ -36,9 +36,15 @@ def main() -> int:
         return fail("last_completed_step måste motsvara högsta completed_steps")
     if len(completed) != len(set(completed)):
         return fail("completed_steps innehåller dubbletter")
+    total_steps = status["plan"]["total_steps"]
+    if any(step > total_steps for step in completed):
+        return fail("completed_steps innehåller steg större än plan.total_steps")
+    current = progress["current_step"]
+    if current is not None and current > total_steps:
+        return fail("current_step får inte vara större än plan.total_steps")
     if status["state"]["overall"] == "release_ready":
-        if completed != list(range(1, 21)):
-            return fail("release_ready kräver steg 1-20 completed")
+        if completed != list(range(1, total_steps + 1)):
+            return fail(f"release_ready kräver steg 1-{total_steps} completed")
         if progress["current_step"] is not None:
             return fail("release_ready kräver current_step: null")
         if status["next_step"] is not None:
