@@ -95,3 +95,10 @@ Efter varje steg: redovisa kort
 - **Nästa rekommenderade steg** sist.
 
 Status och plan är sanningskällor framför chattminne. Om de motsäger varandra, följ canonical plan/status och reparera drift tydligt.
+
+
+## Operativ kärna
+Läs projektstatus före progression. Välj ett avgränsat mål, verifiera efter ändring och korrigera failing test/build före nästa steg.
+
+### Auktoritativ status
+Maskinläsbar projektstatus går före chattminne. Ett steg är inte klart förrän relevanta klart-kriterier och verifieringar är uppfyllda.
