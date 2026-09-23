@@ -7,8 +7,8 @@ plan:
   total_steps: 24
 progress:
   current_phase: migration-1.5
-  current_step: 22
-  last_completed_step: 21
+  current_step: 23
+  last_completed_step: 22
   completed_steps:
     - 1
     - 2
@@ -31,6 +31,7 @@ progress:
     - 19
     - 20
     - 21
+    - 22
   skipped_steps: []
   inserted_steps:
     - 21
@@ -44,9 +45,9 @@ state:
     - Custom GPT kan bara skapa branch/commit/PR när en faktisk GitHub write-capability är konfigurerad.
     - Full semantisk E2E-kvalitet måste även verifieras på verkliga användarprojekt; den automatiska sviten verifierar kontrakt, modeller och beslutslogik.
 next_step:
-  recommended: 22
-  title: Anpassa distributioner och bygg OpenCode
-  reason: Steg 21 är fullt CI-verifierat. Nästa steg är att paketera 1.5-runtime-kontrakt och bygga OpenCode som aktiv peer-runtime.
+  recommended: 23
+  title: Generaliserad runtime parity och release readiness
+  reason: Steg 22 är CI-verifierat med tre aktiva runtimeartefakter. Nästa steg är att generalisera runtime parity och release readiness till GPT Byggaren 1.5-modellen.
 resume:
   supported: true
   required_files:
@@ -55,4 +56,4 @@ resume:
     - docs/development-plan.md
     - STATUS.md
     - PROJECT.md
-  human_readable_status: Steg 1–21 är verifierade. Migrering till GPT Byggaren 1.5.0 fortsätter med distributionsanpassning och OpenCode i steg 22.
+  human_readable_status: Steg 1–22 är verifierade. Migrering till GPT Byggaren 1.5.0 fortsätter med generaliserad runtime parity i steg 23.
