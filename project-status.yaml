@@ -7,8 +7,8 @@ plan:
   total_steps: 24
 progress:
   current_phase: migration-1.5
-  current_step: 21
-  last_completed_step: 20
+  current_step: 22
+  last_completed_step: 21
   completed_steps:
     - 1
     - 2
@@ -30,6 +30,7 @@ progress:
     - 18
     - 19
     - 20
+    - 21
   skipped_steps: []
   inserted_steps:
     - 21
@@ -43,9 +44,9 @@ state:
     - Custom GPT kan bara skapa branch/commit/PR när en faktisk GitHub write-capability är konfigurerad.
     - Full semantisk E2E-kvalitet måste även verifieras på verkliga användarprojekt; den automatiska sviten verifierar kontrakt, modeller och beslutslogik.
 next_step:
-  recommended: 21
-  title: GPT Byggaren 1.5-kontrakt och modellrobust kärna
-  reason: Version 1.0.0 är release-ready. Migrering till GPT Byggaren 1.5.0 har startat och steg 21 väntar på CI-verifiering.
+  recommended: 22
+  title: Anpassa distributioner och bygg OpenCode
+  reason: Steg 21 är fullt CI-verifierat. Nästa steg är att paketera 1.5-runtime-kontrakt och bygga OpenCode som aktiv peer-runtime.
 resume:
   supported: true
   required_files:
@@ -54,4 +55,4 @@ resume:
     - docs/development-plan.md
     - STATUS.md
     - PROJECT.md
-  human_readable_status: Steg 1–20 är stabila. Migrering till GPT Byggaren 1.5.0 pågår i steg 21.
+  human_readable_status: Steg 1–21 är verifierade. Migrering till GPT Byggaren 1.5.0 fortsätter med distributionsanpassning och OpenCode i steg 22.
