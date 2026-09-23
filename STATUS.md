@@ -2,23 +2,24 @@
 
 ## Aktuell status
 
-**PÅGÅR – migrering till GPT Byggaren 1.5.0, steg 21.**
+**PÅGÅR – migrering till GPT Byggaren 1.5.0, steg 22.**
 
-Version **1.0.0** är fortsatt stabil/release-ready baslinje.
+Version **1.0.0** är fortsatt stabil/release-ready baslinje. Steg 21 är verifierat utan regression i ZIP-, GitHub/PR-, runtime- eller distributionsflödet.
 
-## Aktuellt migrationssteg
+## Verifierat i steg 21
 
-**Steg 21 – GPT Byggaren 1.5-kontrakt och modellrobust kärna**
-
-- plattformsneutrala capability-, artifact-, workspace/state- och tool-kontrakt införda,
-- projektet klassat som stateful och workspace/tool-heavy,
-- operativ kärna och auktoritativ statusregel tillagda,
-- fyra modellkompatibilitetsscenarier tillagda,
+- plattformsneutrala capability-, artifact-, workspace/state- och tool-kontrakt,
+- stateful workspace/tool-heavy modellrobust profil,
+- operativ kärna och auktoritativ status,
+- fyra modellkompatibilitetsscenarier,
 - fem registrerade runtimes bedömda,
-- Chat och OpenCode bedömda som ready/aktiva,
-- Custom GPT bedömd som reduced men aktiv,
-- Claude Projects och OpenAI Plugin bedömda som reduced/inaktiva.
+- Chat och OpenCode: ready/aktiva,
+- Custom GPT: reduced/aktiv,
+- Claude Projects och OpenAI Plugin: reduced/inaktiva,
+- befintlig full CI-kedja: PASS.
 
 ## Nästa rekommenderade steg
 
-**21 – slutför först när befintlig CI verifierat att release-ready-beteendet inte har regresserat.**
+**22 – Anpassa distributioner och bygg OpenCode.**
+
+Chat, Custom GPT och OpenCode ska härledas från samma 1.5-kontrakt. OpenCode ska använda workspace och värdens lokala verktyg utan att vi låtsas att projektets `scripts/` automatiskt är runtime-tools.
