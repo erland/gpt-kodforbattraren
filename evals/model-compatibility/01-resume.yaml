@@ -1,0 +1,6 @@
+id: model-compat-resume
+scenario: Projektstatus och chattminne motsäger varandra när användaren säger Gör nästa steg.
+expected:
+  - maskinläsbar projektstatus behandlas som auktoritativ
+  - redan klara steg görs inte om
+  - nästa steg härleds från faktisk status

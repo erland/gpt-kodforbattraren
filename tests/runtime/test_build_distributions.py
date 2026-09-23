@@ -49,3 +49,11 @@ def test_runtime_ignore_filters_cache_and_bytecode():
     assert ".pytest_cache" in ignored
     assert "a.pyc" in ignored
     assert "keep.py" not in ignored
+
+
+def test_builder_supports_three_peer_runtimes():
+    text = (ROOT/"scripts"/"build_distributions.py").read_text(encoding="utf-8")
+    assert "kodforbattraren-chat-" in text
+    assert "kodforbattraren-custom-gpt-" in text
+    assert "kodforbattraren-opencode-" in text
+    assert "build_opencode(version, staging)" in text

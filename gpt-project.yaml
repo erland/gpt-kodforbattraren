@@ -6,6 +6,38 @@ project:
 analysis:
   profile: zip_first_advanced
   source: docs/concept-analysis.md
+  runtime:
+    strategy: peer_candidates
+    candidates:
+    - runtime_id: chatgpt_chat
+      suitability: ready
+      activate_by_default: true
+      reason: ZIP/GitHub-flödet, filhantering och verifiering stöds väl i Chat-runtime.
+    - runtime_id: chatgpt_custom
+      suitability: reduced
+      activate_by_default: true
+      reason: Kärnanalys och stegvis förbättring stöds, men GitHub write-capability och lokal exekvering är plattformsberoende.
+    - runtime_id: claude_project
+      suitability: reduced
+      activate_by_default: false
+      reason: Instruktioner och Knowledge kan paketeras men persistent workspace och deterministisk lokal verifiering är begränsad.
+    - runtime_id: opencode
+      suitability: ready
+      activate_by_default: true
+      reason: Workspace, lokal kodändring, shell/build/test och Git-arbete matchar Kodförbättrarens kärnflöde.
+    - runtime_id: openai_plugin
+      suitability: reduced
+      activate_by_default: false
+      reason: Skills och referenser kan paketeras men Plugin v1 realiserar inte själv hela workspace-, ZIP- och GitHub/PR-flödet.
+
+model_robustness:
+  level: stateful
+  design_target: simpler_and_stronger_llms
+  separate_model_instructions: false
+  prefer_deterministic_validation: true
+  max_core_policy_hops: 1
+  model_compatibility:
+    scenarios: evals/model-compatibility/
 instructions:
   canonical: src/instructions/system.md
   core_contract:
@@ -16,9 +48,137 @@ instructions:
     - Skilj beteendebevarande refaktorering från funktionella och UX-relaterade beteendeförändringar.
     - Avstå från refaktorering när tydlig nytta saknas eller risk och kostnad överstiger
       vinsten.
+    - Operativ kärna
+    - Auktoritativ status
     required_runtime_dependencies: []
     max_required_file_hops: 1
     knowledge_may_not_be_required_for_core_behavior: true
+capabilities:
+  contract_version: 1
+  schema: schemas/capability-contract.schema.json
+  recommendation_mode: inferred_from_use_case
+  ask_user_only_when_business_choice_is_ambiguous: true
+  requirements:
+    web:
+      level: optional
+      reason: Kan behövas för aktuell dokumentation och teknikfakta men är inte kärna för lokal kodanalys.
+    filesystem:
+      read: required
+      write: required
+    shell:
+      level: required
+      reason: Build, test, lint och projektspecifika verifieringskommandon är centrala.
+    code_execution:
+      level: required
+      reason: Kodändringar och deterministisk verifiering är kärnflöde.
+    structured_data:
+      level: required
+    persistent_state:
+      level: required
+    external_tools:
+      level: recommended
+      reason: GitHub/PR-arbete kräver autentiserad extern integration när det arbetsläget används.
+    image_generation:
+      level: not_required
+
+artifacts:
+  contract_version: 1
+  schema: schemas/artifact-contract.schema.json
+  outputs:
+    analysis_report:
+      kind: report
+      format: markdown
+      requirement: required
+      persistence: persistent
+      multiplicity: one
+    refactoring_plan:
+      kind: report
+      format: markdown
+      requirement: required
+      persistence: persistent
+      multiplicity: one
+    work_status:
+      kind: data
+      format: yaml
+      requirement: required
+      persistence: persistent
+      multiplicity: one
+    updated_project:
+      kind: package
+      format: zip
+      requirement: conditional
+      condition: ZIP-läge
+      persistence: persistent
+      multiplicity: one
+    runtime_package:
+      kind: distribution
+      format: zip
+      requirement: required
+      persistence: persistent
+      multiplicity: many
+
+workspace_state:
+  contract_version: 1
+  schema: schemas/workspace-state-contract.schema.json
+  workspace:
+    requirement: required
+    persistence: required
+    portable: true
+    separate_from_assistant: true
+    artifact: updated_project
+  state:
+    requirement: required
+    persistence: required
+    authority: workspace_file
+    format: yaml
+    path: project-status.yaml
+    conversation_fallback: false
+  runtime_preferences:
+    chat: workspace_file
+    agent: workspace_file
+
+tools:
+  contract_version: 1
+  schema: schemas/tool-contract.schema.json
+  tools: []
+
+workflow:
+  mode: explicit_state_machine
+  policy: src/runtime-policy/operational-execution-policy.md
+  current_state_source: project-status.yaml
+  execution_rule: one_state_or_bounded_goal_per_step
+  operational_core:
+  - read_project_contract
+  - read_project_status
+  - select_one_state_or_bounded_goal
+  - load_only_relevant_policy
+  - execute_change
+  - validate_deterministically
+  - correct_before_completion_on_failure
+  - update_structured_status_after_pass
+  - recommend_next_step_from_actual_state
+  states:
+    idea_analysis:
+      next: [architecture]
+    architecture:
+      next: [planning]
+    planning:
+      next: [implementation]
+    implementation:
+      next: [validation]
+    validation:
+      next: [implementation, packaging]
+    packaging:
+      next: [release]
+    release:
+      next: [maintenance]
+    maintenance:
+      next: [implementation, validation]
+    blocked:
+      control_state: true
+    paused:
+      control_state: true
+
 knowledge_architecture:
   canonical_root: knowledge
   active_files:
@@ -42,7 +202,7 @@ knowledge_architecture:
   - knowledge/zip-workflow-policy.yaml
   - knowledge/zip-workflow.md
 runtime:
-  primary: chat_zip
+  primary: none
   chat_zip:
     enabled: true
     entrypoint: START-HERE.md
@@ -83,3 +243,29 @@ release_ready:
   report: docs/release-readiness.md
   runtime_parity: docs/runtime-parity.md
   known_limitations: docs/known-limitations.md
+
+
+build:
+  deterministic: true
+  create_manifest: true
+  create_checksums: true
+  build_project_zip: true
+  build_chat_zip: true
+  build_custom_gpt_zip: true
+  build_claude_zip: false
+  build_opencode_zip: true
+  build_plugin_zip: false
+
+runtime_parity:
+  registered_runtimes:
+  - chatgpt_chat
+  - chatgpt_custom
+  - claude_project
+  - opencode
+  - openai_plugin
+  compared_categories:
+  - behavior
+  - capability
+  - artifact
+  - workspace_state
+  - tool

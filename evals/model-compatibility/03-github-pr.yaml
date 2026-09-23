@@ -1,0 +1,6 @@
+id: model-compat-github-pr
+scenario: En relevant Kodförbättraren-PR är fortfarande öppen när användaren säger Gör nästa steg.
+expected:
+  - arbetet fortsätter på den öppna PR:n
+  - ny PR skapas inte i onödan
+  - faktisk branch och PR-status läses före ändring

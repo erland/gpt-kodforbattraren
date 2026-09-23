@@ -39,13 +39,25 @@ jobs:
       - name: Build distribution smoke test
         run: python scripts/build_distributions.py --version ci-${{ github.sha }}
 
+      - name: Validate OpenCode runtime
+        run: python scripts/validate_opencode_runtime.py --zip dist/kodforbattraren-opencode-ci-${{ github.sha }}.zip
+
+      - name: Validate runtime parity
+        run: python scripts/validate_runtime_parity.py
+
+      - name: Validate release readiness
+        run: python scripts/validate_release_readiness.py
+
+      - name: Validate workflow parity
+        run: python scripts/validate_workflow_parity.py
+
       - name: Verify generated archives
         run: |
           python - <<'PY'
           import json, zipfile
           from pathlib import Path
           manifest = json.loads(Path("dist/release-manifest.json").read_text())
-          assert len(manifest["artifacts"]) == 2
+          assert len(manifest["artifacts"]) == 3
           for name in manifest["artifacts"]:
               path = Path("dist") / name
               assert path.exists(), name

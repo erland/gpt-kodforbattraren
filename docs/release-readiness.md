@@ -6,15 +6,16 @@
 
 ## Releasekriterier
 
-- Canonical instruktion finns och används som källa för båda runtimeformerna.
+- Canonical instruktion finns och används som källa för de aktiva runtimeformerna.
 - Chat ZIP är självbärande och kan startas utan dold projekthistorik.
 - Custom GPT har kompilerad instruktion under 8 000 tecken och högst 20 Knowledge-filer.
+- OpenCode bygger som aktiv workspace-first runtime med AGENTS.md, runtime-contract och skill.
 - Findings, plan, arbetsstatus och source manifest har schemas.
 - ZIP- och GitHub/PR-livscykler har deterministiska beslutsregler.
 - Test-/säkerhetsstrategi inkluderar baseline, known-red, characterization tests och regressionstopp.
 - UX-förändringar hålls åtskilda från ren refaktorering.
 - CI kör modellvalidering, project-status-validering, hygiene, runtime-tester och distributionsbygge.
-- GitHub Release bygger artefakter från release-taggen.
+- GitHub Release bygger alla tre aktiva runtimeartefakter från release-taggen.
 
 ## Valideringar
 
@@ -47,6 +48,7 @@ Se `docs/known-limitations.md`. Begränsningarna är dokumenterade men inte bloc
 5. `Build release distributions` checkar ut exakt tagg och bygger:
    - `kodforbattraren-chat-1.0.0.zip`
    - `kodforbattraren-custom-gpt-1.0.0.zip`
+   - `kodforbattraren-opencode-1.0.0.zip`
    - `release-manifest.json`
 6. Kontrollera SHA-256 i manifestet och bifogade release assets.
 
@@ -61,3 +63,8 @@ Se `docs/known-limitations.md`. Begränsningarna är dokumenterade men inte bloc
 - Chat ZIP SHA-256: `0f2e47c71649b2eaa4fc09023295d91ddda2042251da9709d383926192047c53`
 - Custom GPT SHA-256: `cf48841c75620c4d5e2f23546e26899b434e9a6c1f9a58c03a38ed35148375c8`
 - Blockerare: **inga**
+
+
+## GPT Byggaren 1.5-migrering
+
+Migrationssteg 21–23 är verifierade. Release-readiness omfattar nu fem registrerade runtimes, tre aktiva distributioner, runtime parity, ZIP/manifest-integritet och CI/release workflow parity. Steg 24 slutvaliderar merge-kandidaten.

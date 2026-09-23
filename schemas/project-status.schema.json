@@ -19,7 +19,7 @@
       "required": ["path", "total_steps"],
       "properties": {
         "path": {"type": "string", "minLength": 1},
-        "total_steps": {"const": 20}
+        "total_steps": {"type": "integer", "minimum": 20, "maximum": 24}
       },
       "additionalProperties": true
     },
@@ -28,11 +28,11 @@
       "required": ["current_phase", "current_step", "last_completed_step", "completed_steps", "skipped_steps", "inserted_steps"],
       "properties": {
         "current_phase": {"type": "string", "minLength": 1},
-        "current_step": {"type": ["integer", "null"], "minimum": 1, "maximum": 20},
-        "last_completed_step": {"type": "integer", "minimum": 0, "maximum": 20},
+        "current_step": {"type": ["integer", "null"], "minimum": 1, "maximum": 24},
+        "last_completed_step": {"type": "integer", "minimum": 0, "maximum": 24},
         "completed_steps": {
           "type": "array",
-          "items": {"type": "integer", "minimum": 1, "maximum": 20},
+          "items": {"type": "integer", "minimum": 1, "maximum": 24},
           "uniqueItems": true
         },
         "skipped_steps": {"type": "array"},
@@ -44,7 +44,7 @@
       "type": "object",
       "required": ["overall", "blocking_issues", "warnings"],
       "properties": {
-        "overall": {"enum": ["pass", "blocked", "release_ready"]},
+        "overall": {"enum": ["pass", "blocked", "in-progress", "release_ready"]},
         "blocking_issues": {"type": "array"},
         "warnings": {"type": "array"}
       },
