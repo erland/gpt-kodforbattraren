@@ -56,8 +56,16 @@ jobs:
       - name: Build versioned distributions
         run: python scripts/build_distributions.py --version "${{ steps.version.outputs.value }}"
 
+      - name: Normalize version
+        id: normalized_version
+        shell: bash
+        run: |
+          value="${{ steps.version.outputs.value }}"
+          value="${value#v}"
+          echo "value=$value" >> "$GITHUB_OUTPUT"
+
       - name: Validate OpenCode runtime
-        run: python scripts/validate_opencode_runtime.py --zip dist/kodforbattraren-opencode-${{ steps.version.outputs.value }}.zip
+        run: python scripts/validate_opencode_runtime.py --zip dist/kodforbattraren-opencode-${{ steps.normalized_version.outputs.value }}.zip
 
       - name: Validate runtime parity
         run: python scripts/validate_runtime_parity.py
