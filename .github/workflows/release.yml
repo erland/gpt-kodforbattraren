@@ -56,6 +56,9 @@ jobs:
       - name: Build versioned distributions
         run: python scripts/build_distributions.py --version "${{ steps.version.outputs.value }}"
 
+      - name: Validate OpenCode runtime
+        run: python scripts/validate_opencode_runtime.py --zip dist/kodforbattraren-opencode-${{ steps.version.outputs.value }}.zip
+
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
@@ -63,6 +66,7 @@ jobs:
           path: |
             dist/kodforbattraren-chat-*.zip
             dist/kodforbattraren-custom-gpt-*.zip
+            dist/kodforbattraren-opencode-*.zip
             dist/release-manifest.json
           if-no-files-found: error
 
@@ -74,5 +78,6 @@ jobs:
           gh release upload "${{ github.event.release.tag_name }}" \
             dist/kodforbattraren-chat-*.zip \
             dist/kodforbattraren-custom-gpt-*.zip \
+            dist/kodforbattraren-opencode-*.zip \
             dist/release-manifest.json \
             --clobber
