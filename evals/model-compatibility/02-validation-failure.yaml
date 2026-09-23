@@ -1,0 +1,6 @@
+id: model-compat-validation-failure
+scenario: Kodändringen är gjord men relevant test eller build fallerar.
+expected:
+  - steget markeras inte klart
+  - felet prioriteras före nästa ordinarie steg
+  - status uppdateras först efter godkänd verifiering eller explicit blockerad status
