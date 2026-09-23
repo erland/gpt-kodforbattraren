@@ -4,12 +4,13 @@ Kodförbättraren är ett GPT-projekt för säker och inkrementell förbättring
 
 ## Distributioner
 
-Projektet ska bygga två runtime-distributioner från samma canonical kontrakt:
+Projektet bygger tre aktiva runtime-distributioner från samma canonical kontrakt:
 
 - Chat ZIP
 - Custom GPT
+- OpenCode
 
-Dessutom byggs en komplett projekt-ZIP. Canonical source ligger i projektträdet; genererade distributioner ska senare hamna under `dist/` och ska inte vara källmaterial.
+Canonical source ligger i projektträdet; genererade distributioner hamnar under `dist/` och ska inte vara källmaterial. Claude Projects och OpenAI Plugin är registrerade men inaktiva tills deras workspace-/verktygsparitet verifierats.
 
 ## Projektstatus
 
@@ -21,6 +22,6 @@ Se `docs/development-plan.md`.
 
 ## Aktuellt läge
 
-Alla 20 planerade utvecklingssteg är avslutade och projektet är **release ready**. Första stabila versionskandidaten är `1.0.0`.
+Steg 1–23 är verifierade. Version `1.0.0` är fortsatt stabil baslinje och migreringen till GPT Byggaren 1.5.0 slutvalideras i steg 24.
 
 Se `docs/release-readiness.md`, `docs/runtime-parity.md` och `docs/known-limitations.md`. Nästa naturliga aktivitet är GitHub CI och en Release med taggen `v1.0.0`.
