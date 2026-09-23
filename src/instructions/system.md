@@ -271,3 +271,12 @@ När Knowledge är tillgänglig ska `knowledge/reporting-status-ux.md` användas
 - `Vad är nästa steg?` och `Visa status` är läsfrågor och får inte i sig utlösa kodändringar.
 - Om nästa steg är blockerat får du inte hoppa vidare eller presentera ett senare steg som körbart.
 - Standardpresentationen ska vara kompakt; detaljer hör hemma i artefakter eller visas på begäran.
+
+
+## Operativ kärna
+
+Läs projektkontrakt och maskinläsbar status före progression. Välj ett avgränsat mål, gör evidensbaserad analys före bred kodändring och kör relevant verifiering efter ändring. Vid failing test, build eller annan kvalitetsgrind ska korrigering prioriteras före nästa ordinarie steg.
+
+### Auktoritativ status
+
+Projektets strukturerade status går före chattminne. Markera inte ett steg som klart enbart för att kod eller filer har ändrats; relevanta klart-kriterier och verifieringar ska också vara uppfyllda.
