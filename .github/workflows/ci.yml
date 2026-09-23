@@ -48,6 +48,9 @@ jobs:
       - name: Validate release readiness
         run: python scripts/validate_release_readiness.py
 
+      - name: Validate workflow parity
+        run: python scripts/validate_workflow_parity.py
+
       - name: Verify generated archives
         run: |
           python - <<'PY'
