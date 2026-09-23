@@ -17,3 +17,8 @@ Första stabila versionen av Kodförbättraren.
 - CI och releasebygge från GitHub Release-taggen.
 
 Se `docs/known-limitations.md` före produktionsanvändning.
+
+
+## GPT Byggaren 1.5-migrering
+
+Efter version 1.0.0 har projektet migrerats till GPT Byggaren 1.5.0 med oförändrat domänbeteende. ChatGPT Chat, ChatGPT Custom och OpenCode är aktiva peer runtimes. Fem-runtime parity, release-readiness och CI/release workflow parity verifieras deterministiskt.
