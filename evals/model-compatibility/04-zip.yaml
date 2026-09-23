@@ -1,0 +1,6 @@
+id: model-compat-zip
+scenario: Ett steg genomförs i ZIP-läge.
+expected:
+  - exakt ett avgränsat steg genomförs
+  - relevant verifiering körs
+  - komplett uppdaterad ZIP levereras först efter verifierat resultat
