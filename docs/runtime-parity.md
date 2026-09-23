@@ -24,3 +24,18 @@
 Claude Projects och OpenAI Plugin är registrerade men inaktiva tills deras workspace-/verktygsparitet kan verifieras.
 
 OpenCode-distributionen använder `AGENTS.md`, `.opencode/runtime-contract.json` och `.opencode/skills/kodforbattraren/SKILL.md`. Projektets `scripts/` följer med som stödresurser men deklareras inte automatiskt som runtime-tools.
+
+
+## GPT Byggaren 1.5 – registrerade runtimes
+
+| Runtime | Suitability | Aktiv |
+|---|---|---|
+| ChatGPT Chat | ready | Ja |
+| ChatGPT Custom | reduced | Ja |
+| OpenCode | ready | Ja |
+| Claude Projects | reduced | Nej |
+| OpenAI Plugin | reduced | Nej |
+
+Paritetsgrinden jämför **behavior, capability, artifact, workspace_state och tool**. De tre aktiva runtimepaketen måste bära samma plattformsneutrala kontrakt. Claude Projects och OpenAI Plugin förblir inaktiva tills deras workspace-/verktygsparitet kan verifieras.
+
+`scripts/validate_runtime_parity.py` och `scripts/validate_release_readiness.py` är blockerande i både CI och release.
