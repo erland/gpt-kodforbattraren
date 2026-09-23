@@ -10,6 +10,8 @@ import sys
 import zipfile
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 
@@ -70,11 +72,48 @@ def copy_tree(source: Path, target: Path) -> None:
         shutil.rmtree(target)
     shutil.copytree(source, target, ignore=runtime_ignore)
 
+def load_project_config() -> dict:
+    return yaml.safe_load((ROOT / "gpt-project.yaml").read_text(encoding="utf-8"))
+
+
+def runtime_contract(cfg: dict, runtime_id: str, adapter: dict) -> dict:
+    return {
+        "schema_version": 1,
+        "runtime_id": runtime_id,
+        "capabilities": cfg.get("capabilities", {}),
+        "artifacts": cfg.get("artifacts", {}),
+        "workspace_state": cfg.get("workspace_state", {}),
+        "tools": cfg.get("tools", {}),
+        "adapter": adapter,
+    }
+
+
+def write_runtime_contract(path: Path, cfg: dict, runtime_id: str, adapter: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(runtime_contract(cfg, runtime_id, adapter), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
 def build_chat(version: str, staging: Path) -> Path:
     chat = staging / "chat"
     chat.mkdir(parents=True, exist_ok=True)
     (chat / "assistant").mkdir()
     shutil.copy2(ROOT / "src/instructions/system.md", chat / "assistant/instructions.md")
+    cfg = load_project_config()
+    write_runtime_contract(
+        chat / "assistant/runtime-contract.json",
+        cfg,
+        "chatgpt_chat",
+        {
+            "mode": "chat_zip",
+            "workspace_first": True,
+            "host_tools": True,
+            "local_scripts_are_runtime_tools": False,
+            "canonical_instruction": "assistant/instructions.md",
+        },
+    )
     for name in CHAT_FILES:
         src = ROOT / name
         if src.exists():
@@ -125,10 +164,81 @@ def build_custom(version: str, staging: Path) -> Path:
     custom = staging / "custom-gpt"
     copy_tree(source, custom)
     validate_custom_source(custom)
+    cfg = load_project_config()
+    write_runtime_contract(
+        custom / "runtime-contract.json",
+        cfg,
+        "chatgpt_custom",
+        {
+            "mode": "custom_gpt",
+            "workspace_first": False,
+            "host_tools": True,
+            "local_scripts_are_runtime_tools": False,
+            "github_write_requires_external_capability": True,
+        },
+    )
     (custom / "VERSION").write_text(version + "\n", encoding="utf-8")
     target = DIST / f"kodforbattraren-custom-gpt-{version}.zip"
     zip_tree(custom, target)
     return target
+
+def build_opencode(version: str, staging: Path) -> Path:
+    cfg = load_project_config()
+    out = staging / "opencode"
+    out.mkdir(parents=True, exist_ok=True)
+
+    canonical = (ROOT / "src/instructions/system.md").read_text(encoding="utf-8")
+    adapter = """\n\n## OpenCode runtime\n\nArbeta workspace-first. Använd värdens fil-, shell-, build/test- och Git-verktyg när de finns. Projektets `scripts/` är hjälpscript och blir inte automatiskt runtime-tools. Muterande kommandon ska följa värdens behörighetsmodell och projektets verifieringskrav.\n"""
+    (out / "AGENTS.md").write_text(canonical + adapter, encoding="utf-8")
+
+    opencode_dir = out / ".opencode"
+    skill_dir = opencode_dir / "skills" / "kodforbattraren"
+    skill_dir.mkdir(parents=True, exist_ok=True)
+    (skill_dir / "SKILL.md").write_text(
+        "# Kodförbättraren\n\n"
+        "Analysera före bred förändring. Läs maskinläsbar projektstatus före progression. "
+        "Genomför ett avgränsat steg, kör relevant verifiering och markera inte steget klart medan verifiering fallerar. "
+        "Fortsätt på relevant öppen PR; efter merge utgå från aktuell default branch.\n",
+        encoding="utf-8",
+    )
+    (out / "opencode.json").write_text(
+        json.dumps({
+            "$schema": "https://opencode.ai/config.json",
+            "permission": {"edit": "ask", "bash": "ask", "skill:*": "allow"},
+        }, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+    write_runtime_contract(
+        opencode_dir / "runtime-contract.json",
+        cfg,
+        "opencode",
+        {
+            "mode": "opencode_workspace",
+            "workspace_first": True,
+            "host_tools": True,
+            "local_scripts_are_runtime_tools": False,
+            "canonical_instruction": "AGENTS.md",
+            "skill": ".opencode/skills/kodforbattraren/SKILL.md",
+        },
+    )
+
+    for name in ("knowledge", "schemas", "scripts", "templates"):
+        src = ROOT / name
+        if src.exists():
+            shutil.copytree(src, out / name, ignore=runtime_ignore)
+
+    (out / "README.md").write_text(
+        f"# Kodförbättraren – OpenCode {version}\n\n"
+        "Öppna projektets workspace i OpenCode. AGENTS.md är runtimeinstruktionen. "
+        "OpenCode använder värdens lokala verktyg; scripts/ är stödresurser och deklareras inte som egna runtime-tools.\n",
+        encoding="utf-8",
+    )
+    (out / "VERSION").write_text(version + "\n", encoding="utf-8")
+
+    target = DIST / f"kodforbattraren-opencode-{version}.zip"
+    zip_tree(out, target)
+    return target
+
 
 def checksum(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -142,7 +252,7 @@ def main() -> int:
         DIST.mkdir(exist_ok=True)
         # Ta bort äldre genererade distributions-ZIP:ar så en release aldrig råkar
         # ladda upp artefakter från en tidigare lokal/CI-körning.
-        for pattern in ("kodforbattraren-chat-*.zip", "kodforbattraren-custom-gpt-*.zip"):
+        for pattern in ("kodforbattraren-chat-*.zip", "kodforbattraren-custom-gpt-*.zip", "kodforbattraren-opencode-*.zip"):
             for old in DIST.glob(pattern):
                 old.unlink()
         manifest_path = DIST / "release-manifest.json"
@@ -156,12 +266,14 @@ def main() -> int:
 
         chat = build_chat(version, staging)
         custom = build_custom(version, staging)
+        opencode = build_opencode(version, staging)
 
         manifest = {
             "version": version,
             "artifacts": {
                 chat.name: {"sha256": checksum(chat)},
                 custom.name: {"sha256": checksum(custom)},
+                opencode.name: {"sha256": checksum(opencode)},
             },
         }
         (DIST / "release-manifest.json").write_text(
