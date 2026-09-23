@@ -34,6 +34,8 @@ PARITY_MARKERS = [
     "komplett ny ZIP",
     "ux_change",
     "ingen refaktorering behövs",
+    "Operativ kärna",
+    "Auktoritativ status",
 ]
 
 def normalize_version(raw: str) -> str:
