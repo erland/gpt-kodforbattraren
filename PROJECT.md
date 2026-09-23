@@ -34,7 +34,7 @@ Kritiska runtime-regler ska vara begripliga utan Knowledge-retrieval. Knowledge 
 
 ## Aktuell fas
 
-Canonical foundation. Steg 12 är avslutat. Nästa steg är **Steg 13 – GitHub repository- och PR-arbetsflöde**.
+Version 1.0.0 är stabil baslinje. GPT Byggaren 1.5-migreringen är i **Steg 24 – slutvalidering av migreringen och releasekedjan**.
 
 ## Teknikprofiler
 
@@ -43,3 +43,19 @@ Steg 14 tillför stackdetektion och fördjupande profiler för Java/Quarkus, Jav
 ## Rapporter och status-UX
 
 Canonical presentation och kortkommandon definieras i `knowledge/reporting-status-ux.md` och `templates/`.
+
+
+## GPT Byggaren 1.5-arkitektur
+
+Projektet är stateful och workspace/tool-heavy. Maskinläsbar status är auktoritativ framför chattminne.
+
+Aktiva peer runtimes:
+- ChatGPT Chat
+- ChatGPT Custom
+- OpenCode
+
+Bedömda men inaktiva:
+- Claude Projects
+- OpenAI Plugin
+
+De aktiva runtimepaketen delar samma plattformsneutrala capability-, artifact-, workspace_state- och tool-kontrakt. OpenCode använder workspace-first, värdens lokala shell/build/test/Git-verktyg och deklarerar inte projektets `scripts/` som automatiska runtime-tools.
