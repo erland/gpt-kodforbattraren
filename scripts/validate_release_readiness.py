@@ -42,12 +42,13 @@ if not manifest_path.is_file():
 else:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     artifacts = manifest.get("artifacts", {})
-    if len(artifacts) != 3:
-        errors.append(f"expected 3 runtime artifacts, got {len(artifacts)}")
+    if len(artifacts) != 4:
+        errors.append(f"expected 4 runtime artifacts, got {len(artifacts)}")
     required_prefixes = (
         "kodforbattraren-chat-",
         "kodforbattraren-custom-gpt-",
         "kodforbattraren-opencode-",
+        "kodforbattraren-plugin-",
     )
     for prefix in required_prefixes:
         matches = [name for name in artifacts if name.startswith(prefix)]
