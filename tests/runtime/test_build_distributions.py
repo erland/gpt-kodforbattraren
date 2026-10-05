@@ -51,9 +51,18 @@ def test_runtime_ignore_filters_cache_and_bytecode():
     assert "keep.py" not in ignored
 
 
-def test_builder_supports_three_peer_runtimes():
+def test_builder_supports_four_peer_runtimes():
     text = (ROOT/"scripts"/"build_distributions.py").read_text(encoding="utf-8")
     assert "kodforbattraren-chat-" in text
     assert "kodforbattraren-custom-gpt-" in text
     assert "kodforbattraren-opencode-" in text
+    assert "kodforbattraren-plugin-" in text
     assert "build_opencode(version, staging)" in text
+    assert "build_plugin(version, staging)" in text
+
+def test_plugin_support_resources_exclude_project_ci_scripts():
+    mod = module()
+    assert "derive_next_step.py" in mod.PLUGIN_SCRIPTS
+    assert "zip_workspace.py" in mod.PLUGIN_SCRIPTS
+    assert "build_distributions.py" not in mod.PLUGIN_SCRIPTS
+    assert "validate_runtime_parity.py" not in mod.PLUGIN_SCRIPTS
