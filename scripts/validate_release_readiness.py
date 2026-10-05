@@ -29,10 +29,10 @@ progress = status.get("progress", {})
 current_step = progress.get("current_step")
 last_completed = int(progress.get("last_completed_step", 0))
 overall = status.get("state", {}).get("overall")
-in_progress_migration = current_step in {23, 24} and last_completed >= 22
-completed_migration = current_step is None and last_completed == 24 and overall == "release_ready"
+in_progress_migration = current_step in {23, 24, 25} and last_completed >= 22
+completed_migration = current_step is None and last_completed == 25 and overall == "release_ready"
 if not (in_progress_migration or completed_migration):
-    errors.append("migration status must be step 23/24 or a consistent completed step-24 release_ready state")
+    errors.append("migration status must be step 23/24/25 or a consistent completed step-25 release_ready state")
 if status.get("state", {}).get("blocking_issues"):
     errors.append("blocking issues must be empty")
 
