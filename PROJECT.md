@@ -59,3 +59,8 @@ Bedömda men inaktiva:
 - OpenAI Plugin
 
 De aktiva runtimepaketen delar samma plattformsneutrala capability-, artifact-, workspace_state- och tool-kontrakt. OpenCode använder workspace-first, värdens lokala shell/build/test/Git-verktyg och deklarerar inte projektets `scripts/` som automatiska runtime-tools.
+
+
+## OpenAI Plugin
+
+OpenAI Plugin är en aktiv skills-first `equivalent_runtime_dependent` peer runtime. Canonical `tools` förblir tom; utvalda Pythonfiler paketeras som stödresurser och hostens workspace/shell/code/GitHub/archive-capabilities realiserar arbetet.
