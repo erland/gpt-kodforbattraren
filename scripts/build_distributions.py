@@ -24,6 +24,16 @@ CHAT_FILES = [
     "templates",
 ]
 
+PLUGIN_SCRIPTS = [
+    "derive_next_step.py",
+    "detect_technology_profiles.py",
+    "generate_refactoring_plan.py",
+    "github_pr_decision.py",
+    "interpret_progress_command.py",
+    "zip_work_status.py",
+    "zip_workspace.py",
+]
+
 PARITY_MARKERS = [
     "Förstå först, prioritera därefter",
     "Gör nästa steg",
@@ -242,6 +252,108 @@ def build_opencode(version: str, staging: Path) -> Path:
     return target
 
 
+def build_plugin(version: str, staging: Path) -> Path:
+    cfg = load_project_config()
+    out = staging / "plugin"
+    out.mkdir(parents=True, exist_ok=True)
+
+    skill_id = cfg["runtime"]["openai_plugin"]["skill_id"]
+    skill = out / "skills" / skill_id
+    references = skill / "references"
+    scripts_dir = skill / "scripts"
+    assets = skill / "assets"
+    references.mkdir(parents=True, exist_ok=True)
+    scripts_dir.mkdir(parents=True, exist_ok=True)
+    assets.mkdir(parents=True, exist_ok=True)
+
+    manifest = {
+        "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+        "name": skill_id,
+        "version": version,
+        "description": "Säker och inkrementell förbättring av befintlig källkod med workspace-first status, verifiering och ZIP/GitHub-flöden.",
+    }
+    (out / "plugin.json").write_text(
+        json.dumps(manifest, indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+    adapter = {
+        "mode": "openai_plugin",
+        "skills_first": True,
+        "workspace_first": True,
+        "canonical_instruction": f"skills/{skill_id}/SKILL.md",
+        "state_authority": "workspace_file",
+        "state_path": cfg["runtime"]["openai_plugin"]["state_path"],
+        "host_tools": True,
+        "local_scripts_are_runtime_tools": False,
+        "script_resources": {
+            "packaged": PLUGIN_SCRIPTS,
+            "mcp_required_for_resource_use": False,
+        },
+        "host_requirements": {
+            "filesystem_read": "required",
+            "filesystem_write": "required_for_implementation",
+            "persistent_state": "required",
+            "shell": "required_for_full_parity",
+            "code_execution": "required_for_full_parity",
+            "github_write": "optional_external_capability",
+            "archive_output": "required_for_zip_delivery",
+        },
+        "fallback_policy": {
+            "without_writable_workspace": "analysis_and_planning_only",
+            "without_shell_or_code_execution": "do_not_mark_implementation_verified",
+            "without_github_write": "github_read_only_or_zip_mode",
+            "without_archive_output": "do_not_claim_updated_zip_delivered",
+        },
+    }
+    write_runtime_contract(out / "runtime-contract.json", cfg, "openai_plugin", adapter)
+
+    canonical = (ROOT / "src/instructions/system.md").read_text(encoding="utf-8").strip()
+    skill_text = (
+        "---\n"
+        "name: kodforbattraren\n"
+        "description: Säker och inkrementell förbättring av befintlig källkod med faktisk workspace-status och deterministisk verifiering.\n"
+        "---\n\n"
+        "# Kodförbättraren\n\n"
+        "## Plugin-runtime\n\n"
+        "- Arbeta workspace-first och läs alltid faktisk maskinläsbar projektstatus före progression.\n"
+        "- Samtalsminne ersätter aldrig workspace-state.\n"
+        "- Ändra inte kod utan writable workspace.\n"
+        "- Markera aldrig ett implementeringssteg verifierat om build/test/lint eller annan obligatorisk kontroll inte faktiskt har körts och passerat.\n"
+        "- I GitHub-läge kräver branch/commit/PR en faktisk auktoriserad GitHub-capability; annars arbeta read-only eller använd ZIP-läge.\n"
+        "- I ZIP-läge får en komplett uppdaterad ZIP endast påstås levererad när hosten faktiskt kan skapa och integritetskontrollera arkivet.\n"
+        "- Paketerade Pythonfiler är stödresurser, inte canonical tools, och kräver ingen MCP-wrapper enbart för att användas.\n"
+        "- Projektets egna build/release/CI-validatorer ingår inte i Plugin-runtime-resurserna.\n\n"
+        "## Canonical behavior\n\n"
+        + canonical
+        + "\n"
+    )
+    (skill / "SKILL.md").write_text(skill_text, encoding="utf-8")
+
+    shutil.copytree(ROOT / "knowledge", references / "knowledge", ignore=runtime_ignore)
+    shutil.copytree(ROOT / "schemas", references / "schemas", ignore=runtime_ignore)
+    policy_target = references / "runtime-policy"
+    policy_target.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / "src/runtime-policy/operational-execution-policy.md", policy_target / "operational-execution-policy.md")
+    shutil.copytree(ROOT / "templates", assets / "templates", ignore=runtime_ignore)
+
+    for script_name in PLUGIN_SCRIPTS:
+        shutil.copy2(ROOT / "scripts" / script_name, scripts_dir / script_name)
+
+    (out / "README.md").write_text(
+        f"# Kodförbättraren – OpenAI Plugin {version}\n\n"
+        "Skills-first peer runtime med equivalent_runtime_dependent parity. "
+        "Full implementation kräver writable workspace, persistent state, shell/code execution och vid behov GitHub/archive-capability. "
+        "Paketerade scripts är stödresurser och kräver inte MCP-wrapper.\n",
+        encoding="utf-8",
+    )
+    (out / "VERSION").write_text(version + "\n", encoding="utf-8")
+
+    target = DIST / f"kodforbattraren-plugin-{version}.zip"
+    zip_tree(out, target)
+    return target
+
+
 def checksum(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -254,7 +366,7 @@ def main() -> int:
         DIST.mkdir(exist_ok=True)
         # Ta bort äldre genererade distributions-ZIP:ar så en release aldrig råkar
         # ladda upp artefakter från en tidigare lokal/CI-körning.
-        for pattern in ("kodforbattraren-chat-*.zip", "kodforbattraren-custom-gpt-*.zip", "kodforbattraren-opencode-*.zip"):
+        for pattern in ("kodforbattraren-chat-*.zip", "kodforbattraren-custom-gpt-*.zip", "kodforbattraren-opencode-*.zip", "kodforbattraren-plugin-*.zip"):
             for old in DIST.glob(pattern):
                 old.unlink()
         manifest_path = DIST / "release-manifest.json"
@@ -269,6 +381,7 @@ def main() -> int:
         chat = build_chat(version, staging)
         custom = build_custom(version, staging)
         opencode = build_opencode(version, staging)
+        plugin = build_plugin(version, staging)
 
         manifest = {
             "version": version,
@@ -276,6 +389,7 @@ def main() -> int:
                 chat.name: {"sha256": checksum(chat)},
                 custom.name: {"sha256": checksum(custom)},
                 opencode.name: {"sha256": checksum(opencode)},
+                plugin.name: {"sha256": checksum(plugin)},
             },
         }
         (DIST / "release-manifest.json").write_text(
