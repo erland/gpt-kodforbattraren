@@ -10,3 +10,6 @@
 4. **UX-slutsatser från enbart kod är hypoteser när faktisk användning inte kan observeras.**
 5. **Custom GPT har plattformsgränser.** Kompilerad instruktion och Knowledge är därför en kondenserad variant av Chat ZIP,
    men kritiska beteendekrav ska vara paritetsbevarade.
+
+6. **OpenAI Plugin är runtime-beroende.** Pluginen provisionerar inte själv writable workspace, shell/code execution, GitHub write eller arkivoutput. Utan dessa får den analysera och planera, men får inte påstå verifierad implementation, skapad PR eller levererad uppdaterad ZIP.
+7. **Plugin-scripts är stödresurser, inte canonical tools.** De kan användas när hosten erbjuder kompatibel Python-exekvering och kräver ingen MCP-wrapper enbart för att användas.
