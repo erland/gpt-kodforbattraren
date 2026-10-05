@@ -46,26 +46,30 @@ check(set(candidates) == EXPECTED_RUNTIMES, "all five runtimes must have explici
 
 for runtime_id in EXPECTED_RUNTIMES:
     item = candidates.get(runtime_id, {})
-    check(item.get("suitability") in {"ready", "reduced", "not_viable"}, f"{runtime_id} invalid suitability")
+    check(item.get("suitability") in {"ready", "reduced", "not_viable", "equivalent_runtime_dependent"}, f"{runtime_id} invalid suitability")
     check(bool(item.get("reason")), f"{runtime_id} missing reason")
 
-for runtime_id in ("chatgpt_chat", "chatgpt_custom", "opencode"):
+for runtime_id in ("chatgpt_chat", "chatgpt_custom", "opencode", "openai_plugin"):
     check(candidates.get(runtime_id, {}).get("activate_by_default") is True, f"{runtime_id} must be active")
-for runtime_id in ("claude_project", "openai_plugin"):
-    item = candidates.get(runtime_id, {})
-    check(item.get("activate_by_default") is False, f"{runtime_id} must remain inactive")
-    check(item.get("suitability") == "reduced", f"{runtime_id} must be reduced")
+plugin = candidates.get("openai_plugin", {})
+check(plugin.get("activate_by_default") is True, "openai_plugin must be active")
+check(plugin.get("suitability") == "equivalent_runtime_dependent", "openai_plugin must be equivalent_runtime_dependent")
+claude = candidates.get("claude_project", {})
+check(claude.get("activate_by_default") is False, "claude_project must remain inactive")
+check(claude.get("suitability") == "reduced", "claude_project must be reduced")
 
 active_contracts = [
     (ROOT / "dist" / ".staging" / "chat" / "assistant" / "runtime-contract.json", "chatgpt_chat"),
     (ROOT / "dist" / ".staging" / "custom-gpt" / "runtime-contract.json", "chatgpt_custom"),
     (ROOT / "dist" / ".staging" / "opencode" / ".opencode" / "runtime-contract.json", "opencode"),
+    (ROOT / "dist" / ".staging" / "plugin" / "runtime-contract.json", "openai_plugin"),
 ]
 # Build script cleans staging after completion, so validate directly from ZIPs when staging is absent.
 zip_patterns = {
     "chatgpt_chat": "kodforbattraren-chat-*.zip",
     "chatgpt_custom": "kodforbattraren-custom-gpt-*.zip",
     "opencode": "kodforbattraren-opencode-*.zip",
+    "openai_plugin": "kodforbattraren-plugin-*.zip",
 }
 
 import zipfile
@@ -81,6 +85,7 @@ for _, runtime_id in active_contracts:
             "chatgpt_chat": "assistant/runtime-contract.json",
             "chatgpt_custom": "runtime-contract.json",
             "opencode": ".opencode/runtime-contract.json",
+            "openai_plugin": "runtime-contract.json",
         }[runtime_id]
         if contract_name not in zf.namelist():
             errors.append(f"{runtime_id} missing runtime contract")
@@ -97,6 +102,7 @@ for runtime_id, pattern, name in (
     ("chatgpt_chat", "kodforbattraren-chat-*.zip", "assistant/instructions.md"),
     ("chatgpt_custom", "kodforbattraren-custom-gpt-*.zip", "INSTRUCTIONS.md"),
     ("opencode", "kodforbattraren-opencode-*.zip", "AGENTS.md"),
+    ("openai_plugin", "kodforbattraren-plugin-*.zip", "skills/kodforbattraren/SKILL.md"),
 ):
     matches = sorted((ROOT / "dist").glob(pattern))
     if matches:
@@ -113,8 +119,8 @@ report = {
     "result": "PASS" if not errors else "FAIL",
     "registered_runtimes": sorted(registered),
     "compared_categories": sorted(categories),
-    "active_runtimes": ["chatgpt_chat", "chatgpt_custom", "opencode"],
-    "inactive_runtimes": ["claude_project", "openai_plugin"],
+    "active_runtimes": ["chatgpt_chat", "chatgpt_custom", "opencode", "openai_plugin"],
+    "inactive_runtimes": ["claude_project"],
     "errors": errors,
 }
 print(json.dumps(report, ensure_ascii=False, indent=2))

@@ -576,3 +576,23 @@ Nästa rekommenderade steg är **Steg 3 – Skapa canonical projektstruktur**. D
 - alla aktiva distributioner och gates passerar,
 - dokumentationen beskriver 1.5-arkitekturen,
 - projektet är redo att mergeas och releasas.
+
+
+### Steg 25 – OpenAI Plugin peer-distribution
+
+**Mål:** Aktivera OpenAI Plugin som skills-first `equivalent_runtime_dependent` peer runtime utan att försvaga Kodförbättrarens workspace/state- och verifieringskontrakt.
+
+**Leverabler:**
+- `plugin.json` och `runtime-contract.json` i Plugin-ZIP-roten,
+- canonical instruktion i `skills/kodforbattraren/SKILL.md`,
+- Knowledge, schemas, runtime-policy och templates som references/assets,
+- avgränsad runtime-support closure för next-step, teknikdetektion, planering, GitHub-beslut och säkert ZIP-arbete,
+- inga nya canonical runtime-tools och ingen MCP-wrapper,
+- Plugin i CI, runtime parity, release readiness och GitHub Release.
+
+**Klart när:**
+- fyra aktiva runtimeartefakter byggs och valideras,
+- Plugin använder workspace_file som state authority,
+- implementation får inte markeras verifierad utan faktisk shell/code-verifiering,
+- GitHub/ZIP-leverans påstås endast när hosten faktiskt erbjuder motsvarande capability,
+- CI/release workflow parity passerar.

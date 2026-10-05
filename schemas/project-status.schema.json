@@ -19,7 +19,7 @@
       "required": ["path", "total_steps"],
       "properties": {
         "path": {"type": "string", "minLength": 1},
-        "total_steps": {"type": "integer", "minimum": 20, "maximum": 24}
+        "total_steps": {"type": "integer", "minimum": 20, "maximum": 25}
       },
       "additionalProperties": true
     },
@@ -28,11 +28,11 @@
       "required": ["current_phase", "current_step", "last_completed_step", "completed_steps", "skipped_steps", "inserted_steps"],
       "properties": {
         "current_phase": {"type": "string", "minLength": 1},
-        "current_step": {"type": ["integer", "null"], "minimum": 1, "maximum": 24},
-        "last_completed_step": {"type": "integer", "minimum": 0, "maximum": 24},
+        "current_step": {"type": ["integer", "null"], "minimum": 1, "maximum": 25},
+        "last_completed_step": {"type": "integer", "minimum": 0, "maximum": 25},
         "completed_steps": {
           "type": "array",
-          "items": {"type": "integer", "minimum": 1, "maximum": 24},
+          "items": {"type": "integer", "minimum": 1, "maximum": 25},
           "uniqueItems": true
         },
         "skipped_steps": {"type": "array"},

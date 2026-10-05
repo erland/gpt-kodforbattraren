@@ -26,9 +26,9 @@ analysis:
       activate_by_default: true
       reason: Workspace, lokal kodändring, shell/build/test och Git-arbete matchar Kodförbättrarens kärnflöde.
     - runtime_id: openai_plugin
-      suitability: reduced
-      activate_by_default: false
-      reason: Skills och referenser kan paketeras men Plugin v1 realiserar inte själv hela workspace-, ZIP- och GitHub/PR-flödet.
+      suitability: equivalent_runtime_dependent
+      activate_by_default: true
+      reason: Skills-first runtime kan bära canonical state machine, policies, schemas och stödresurser när hosten erbjuder writable workspace, persistent state, shell/code execution samt valfri GitHub/archive-capability.
 
 model_robustness:
   level: stateful
@@ -216,6 +216,22 @@ runtime:
       strategy: compiled
       max_files: 20
     status: implemented
+  openai_plugin:
+    enabled: true
+    role: peer_distribution
+    mode: skills_first
+    artifact_name: kodforbattraren-plugin-{version}.zip
+    skill_id: kodforbattraren
+    state_authority: workspace_file
+    state_path: project-status.yaml
+    compatibility:
+      parity: equivalent_runtime_dependent
+      writable_workspace: required_for_implementation
+      shell: required_for_full_parity
+      code_execution: required_for_full_parity
+      github_write: optional_external_capability
+      archive_output: host_capability_dependent
+      mcp_required_for_script_resources: false
 development:
   plan: docs/development-plan.md
   status: project-status.yaml
@@ -254,7 +270,7 @@ build:
   build_custom_gpt_zip: true
   build_claude_zip: false
   build_opencode_zip: true
-  build_plugin_zip: false
+  build_plugin_zip: true
 
 runtime_parity:
   registered_runtimes:

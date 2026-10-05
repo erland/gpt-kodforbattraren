@@ -67,6 +67,9 @@ jobs:
       - name: Validate OpenCode runtime
         run: python scripts/validate_opencode_runtime.py --zip dist/kodforbattraren-opencode-${{ steps.normalized_version.outputs.value }}.zip
 
+      - name: Validate OpenAI Plugin runtime
+        run: python scripts/validate_openai_plugin.py --zip dist/kodforbattraren-plugin-${{ steps.normalized_version.outputs.value }}.zip
+
       - name: Validate runtime parity
         run: python scripts/validate_runtime_parity.py
 
@@ -84,6 +87,7 @@ jobs:
             dist/kodforbattraren-chat-*.zip
             dist/kodforbattraren-custom-gpt-*.zip
             dist/kodforbattraren-opencode-*.zip
+            dist/kodforbattraren-plugin-*.zip
             dist/release-manifest.json
           if-no-files-found: error
 
@@ -96,5 +100,6 @@ jobs:
             dist/kodforbattraren-chat-*.zip \
             dist/kodforbattraren-custom-gpt-*.zip \
             dist/kodforbattraren-opencode-*.zip \
+            dist/kodforbattraren-plugin-*.zip \
             dist/release-manifest.json \
             --clobber

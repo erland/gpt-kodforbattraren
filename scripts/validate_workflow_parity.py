@@ -15,6 +15,7 @@ shared_markers = [
     "pytest -q -p no:cacheprovider tests/runtime",
     "build_distributions.py",
     "validate_opencode_runtime.py",
+    "validate_openai_plugin.py",
     "validate_runtime_parity.py",
     "validate_release_readiness.py",
 ]
@@ -28,6 +29,7 @@ for artifact in (
     "kodforbattraren-chat-",
     "kodforbattraren-custom-gpt-",
     "kodforbattraren-opencode-",
+    "kodforbattraren-plugin-",
 ):
     if artifact not in release:
         errors.append(f"Release missing active artifact: {artifact}")
