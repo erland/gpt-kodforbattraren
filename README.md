@@ -23,6 +23,6 @@ Se `docs/development-plan.md`.
 
 ## Aktuellt läge
 
-Steg 1–23 är verifierade. Version `1.0.0` är fortsatt stabil baslinje och migreringen till GPT Byggaren 1.5.0 slutvalideras i steg 24.
+Steg 1–25 är verifierade. Version `1.0.0` är fortsatt stabil baslinje och OpenAI Plugin är nu en aktiv runtime-dependent peer distribution.
 
 Se `docs/release-readiness.md`, `docs/runtime-parity.md` och `docs/known-limitations.md`. Nästa naturliga aktivitet är GitHub CI och en Release med taggen `v1.0.0`.
