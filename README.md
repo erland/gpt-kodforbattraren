@@ -4,13 +4,14 @@ Kodförbättraren är ett GPT-projekt för säker och inkrementell förbättring
 
 ## Distributioner
 
-Projektet bygger tre aktiva runtime-distributioner från samma canonical kontrakt:
+Projektet bygger fyra aktiva runtime-distributioner från samma canonical kontrakt:
 
 - Chat ZIP
 - Custom GPT
 - OpenCode
+- OpenAI Plugin
 
-Canonical source ligger i projektträdet; genererade distributioner hamnar under `dist/` och ska inte vara källmaterial. Claude Projects och OpenAI Plugin är registrerade men inaktiva tills deras workspace-/verktygsparitet verifierats.
+Canonical source ligger i projektträdet; genererade distributioner hamnar under `dist/` och ska inte vara källmaterial. Claude Projects är fortsatt inaktiv. OpenAI Plugin är en skills-first `equivalent_runtime_dependent` peer runtime: full implementation kräver writable workspace, persistent state och kompatibel shell/code execution; GitHub-write och ZIP-output används bara när hosten faktiskt erbjuder dem.
 
 ## Projektstatus
 
