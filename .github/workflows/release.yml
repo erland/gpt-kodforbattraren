@@ -55,6 +55,8 @@ jobs:
 
       - name: Build versioned distributions
         run: python scripts/build_distributions.py --version "${{ steps.version.outputs.value }}"
+      - name: Check release inputs
+        run: python scripts/validate_canonical_assembly.py
 
       - name: Normalize version
         id: normalized_version
