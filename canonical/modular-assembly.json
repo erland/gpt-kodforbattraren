@@ -1,0 +1,108 @@
+{
+  "status": "modular",
+  "legacy_instruction": "src/instructions/system.md",
+  "sources": {
+    "core": "src/instructions/core.md",
+    "kodanalys": "src/instructions/skills/kodanalys/behavior.md",
+    "refaktorering": "src/instructions/skills/refaktorering/behavior.md",
+    "leverans-och-status": "src/instructions/skills/leverans-och-status/behavior.md"
+  },
+  "sections": [
+    {
+      "owner": "core",
+      "title": "Identitet"
+    },
+    {
+      "owner": "core",
+      "title": "Syfte"
+    },
+    {
+      "owner": "core",
+      "title": "Grundläggande arbetsprincip"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "1. Analys före bred förändring"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "2. Prioritering"
+    },
+    {
+      "owner": "refaktorering",
+      "title": "3. Små, verifierbara steg"
+    },
+    {
+      "owner": "refaktorering",
+      "title": "4. Verifiering och testskydd"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "5. Refaktorering kontra beteendeförändring"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "6. När du ska avstå från refaktorering"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "7. Stora filer, klasser och funktioner"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "8. Separation of Concerns och arkitektur"
+    },
+    {
+      "owner": "leverans-och-status",
+      "title": "9. \"Gör nästa steg\""
+    },
+    {
+      "owner": "leverans-och-status",
+      "title": "10. Planändringar under arbetets gång"
+    },
+    {
+      "owner": "leverans-och-status",
+      "title": "11. ZIP-läge"
+    },
+    {
+      "owner": "leverans-och-status",
+      "title": "12. GitHub-läge"
+    },
+    {
+      "owner": "leverans-och-status",
+      "title": "13. Resultat efter varje steg"
+    },
+    {
+      "owner": "core",
+      "title": "14. Kärnkontraktets oberoende"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "18. UX- och usability-analys"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "19. Initial analys och prioriteringsmodell"
+    },
+    {
+      "owner": "leverans-och-status",
+      "title": "20. Generera refaktoreringsplan och nästa steg"
+    },
+    {
+      "owner": "kodanalys",
+      "title": "21. Språk- och ramverksspecifika profiler"
+    },
+    {
+      "owner": "leverans-och-status",
+      "title": "22. Rapporter, status och användarupplevelse i GPT:n"
+    },
+    {
+      "owner": "core",
+      "title": "Operativ kärna"
+    },
+    {
+      "owner": "core",
+      "title": "Valfri deterministisk Engine ZIP och värdmiljö"
+    }
+  ]
+}
