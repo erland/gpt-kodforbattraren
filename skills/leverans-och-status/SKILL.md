@@ -19,3 +19,7 @@ Använd när användaren säger ”Gör nästa steg”, arbetar med ZIP eller vi
 - `knowledge/reporting-status-ux.md`
 
 Frånvaro av GitHub write, bestående filer eller körmiljö innebär reducerad leverans, inte tyst lyckande.
+
+## Valfri Engine ZIP och säker fallback
+
+När Kodförbättrarens deterministiska Python-skript behöver köras, försök först använda verkligt tillgänglig körmiljö och skript i arbetsprojektet. Om skripten saknas kan användaren bifoga den versionsmatchade `kodforbattraren-engine-<version>.zip` från GitHub Release. Kontrollera arkivintegriteten och kör `python scripts/selftest.py` innan användning. Engine ZIP ger inte i sig åtkomst till Python, bestående filer eller GitHub och kräver ingen MCP-server. Om dessa värdförmågor saknas, erbjud endast analys/planering och redovisa vilka implementationstester som inte kunde köras. Påstå aldrig att ett arbetssteg eller en ZIP har verifierats utan faktisk kontroll.
