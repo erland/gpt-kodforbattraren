@@ -22,7 +22,7 @@ if out == source or source in out.parents or out == engine or engine in out.pare
     p.error("output must be a separate directory outside source and engine")
 if out.exists(): p.error("output already exists: "+str(out))
 base=yaml.safe_load((engine/"gpt-project.yaml").read_text(encoding="utf-8"))
-shutil.copytree(source,out,ignore=shutil.ignore_patterns(".git","dist","build","__pycache__",".pytest_cache"))
+shutil.copytree(source,out,ignore=shutil.ignore_patterns(".git","dist","build","builder","builder.zip","migration-artifacts","__pycache__",".pytest_cache"))
 cfg=yaml.safe_load((out/"gpt-project.yaml").read_text(encoding="utf-8"))
 cfg["project"]["description"]="Analys och säker stegvis förbättring av befintliga kodprojekt."
 cfg["structure"]=deepcopy(base["structure"])
