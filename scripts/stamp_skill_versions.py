@@ -26,7 +26,7 @@ def stamp(content: str, version: str) -> str:
     return opening + "---" + metadata + "---" + rest
 
 def main(dist: Path, version: str) -> None:
-    if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:[-.][A-Za-z0-9.-]+)?", version):
+    if not (version == "migration-ci" or re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:[-.][A-Za-z0-9.-]+)?", version)):
         raise ValueError("Invalid version")
     changed = {}
     total = 0
