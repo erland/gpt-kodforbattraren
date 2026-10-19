@@ -13,17 +13,18 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def stamp(content: str, version: str) -> str:
-    if not content.startswith("---\n"):
+    match = re.match(r"\\A---\\n(.*?)\\n---", content, flags=re.DOTALL)
+    if not match:
         raise ValueError("Generated SKILL.md has no frontmatter")
-    opening, metadata, rest = content.split("---", 2)
-    # Frontmatter is already known to contain a metadata: map.
-    if not re.search(r"(?m)^metadata:\s*$", metadata):
-        raise ValueError("Generated Skill missing metadata map")
-    if re.search(r"(?m)^  version:", metadata):
-        metadata = re.sub(r'(?m)^  version:.*$', '  version: "' + version + '"', metadata)
+    frontmatter = match.group(1)
+    if re.search(r"(?m)^metadata:\\s*$", frontmatter):
+        if re.search(r"(?m)^  version:", frontmatter):
+            frontmatter = re.sub(r'(?m)^  version:.*$', '  version: "' + version + '"', frontmatter)
+        else:
+            frontmatter = re.sub(r"(?m)^metadata:\\s*$", 'metadata:\\n  version: "' + version + '"', frontmatter)
     else:
-        metadata = re.sub(r"(?m)^metadata:\s*$", 'metadata:\n  version: "' + version + '"', metadata)
-    return opening + "---" + metadata + "---" + rest
+        frontmatter += '\\nmetadata:\\n  version: "' + version + '"'
+    return "---\\n" + frontmatter + "\\n---" + content[match.end():]
 
 def main(dist: Path, version: str) -> None:
     if not (version == "migration-ci" or re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:[-.][A-Za-z0-9.-]+)?", version)):
