@@ -137,6 +137,9 @@ jobs:
           path: migration-artifacts/
           if-no-files-found: error
 
+      - name: Validate workflow parity
+        run: python scripts/validate_workflow_parity.py
+
       - name: Attach packages to published release
         if: github.event_name == 'release'
         env:
