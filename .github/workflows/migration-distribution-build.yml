@@ -75,7 +75,20 @@ jobs:
           for p in archives:
               with zipfile.ZipFile(p) as z:
                   assert z.testzip() is None,p
-          print("PASS",len(archives),"ZIP archives")
+          project=[p for p in archives if "-project-" in p.name]
+          assert len(project)==1, [p.name for p in project]
+          with zipfile.ZipFile(project[0]) as z:
+              leaked=[n for n in z.namelist() if n == "builder.zip" or n.startswith(("builder/","migration-artifacts/"))]
+              assert not leaked, "Build-environment files leaked: "+str(leaked[:10])
+          plugin=[p for p in archives if "-plugin-" in p.name]
+          assert len(plugin)==1, [p.name for p in plugin]
+          with zipfile.ZipFile(plugin[0]) as z:
+              names=z.namelist()
+              assert "plugin.json" in names, "Plugin manifest missing"
+              assert len([n for n in names if n.endswith("/SKILL.md")]) >= 3, "Plugin skills missing"
+              runtime_scripts=[n for n in names if n.endswith(".py")]
+              print("Plugin Python scripts:",len(runtime_scripts),"(host execution unverified)")
+          print("PASS",len(archives),"ZIP archives; no Builder leakage")
           PY
       - name: Stage artifacts inside checkout
         run: |
