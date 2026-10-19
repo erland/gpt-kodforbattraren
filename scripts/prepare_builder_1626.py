@@ -32,6 +32,9 @@ for name in ("chat_zip","plugin","claude","opencode"):
 cfg["runtime"]["opencode"]["skills"]["definitions"]=[]
 cfg["runtime"]["custom_gpt"]["enabled"]=False
 cfg["runtime"]["openai_plugin"]["enabled"]=False
+cfg["instructions"]["mode"]="modular_skills"
+cfg["instructions"]["core"]="src/instructions/core.md"
+cfg["instructions"]["assembly"]="canonical/modular-assembly.json"
 cfg["skills"]={"contract_version":1,"mode":"inferred","resource_policy":"explicit","definitions":[]}
 for ident,desc,reference in (
  ("kodanalys","Analysera kodprojekt och prioritera förbättringar","knowledge/code-quality-refactoring.md"),
