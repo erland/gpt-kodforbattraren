@@ -77,9 +77,13 @@ jobs:
                   assert z.testzip() is None,p
           print("PASS",len(archives),"ZIP archives")
           PY
+      - name: Stage artifacts inside checkout
+        run: |
+          mkdir -p migration-artifacts
+          cp ../migration-project/dist/* migration-artifacts/
       - name: Upload verification artifacts
         uses: actions/upload-artifact@v4
         with:
           name: migration-five-runtimes
-          path: ../migration-project/dist/
+          path: migration-artifacts/
           if-no-files-found: error
