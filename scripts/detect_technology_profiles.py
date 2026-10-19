@@ -43,6 +43,17 @@ def detect(root: Path):
             if "javascript-typescript" not in profiles: profiles.append("javascript-typescript")
             profiles.append("react"); evidence.append("React dependency")
 
+    markers = [name for name in (
+        "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt",
+        "requirements-dev.txt", "Pipfile", "Pipfile.lock", "poetry.lock",
+        "uv.lock", "pytest.ini", "tox.ini"
+    ) if (root / name).is_file()]
+    python_files = list(root.glob("*.py"))[:1]
+    if (root / "src").is_dir():
+        python_files += list((root / "src").glob("*.py"))[:1]
+    if markers or python_files:
+        profiles.append("python")
+        evidence.append("Python evidence: " + ", ".join(markers or [str(p.relative_to(root)) for p in python_files]))
     if not profiles:
         profiles.append("generic-backend-web"); evidence.append("No stronger supported profile detected")
     return profiles, evidence
