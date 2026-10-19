@@ -94,6 +94,21 @@ jobs:
         run: |
           mkdir -p migration-artifacts
           cp ../migration-project/dist/* migration-artifacts/
+      - name: Build and selftest optional Engine ZIP
+        run: |
+          python scripts/build_optional_engine.py --version migration-ci --output migration-artifacts/kodforbattraren-engine-migration-ci.zip
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import zipfile
+          import tempfile
+          archive=Path("migration-artifacts/kodforbattraren-engine-migration-ci.zip")
+          with tempfile.TemporaryDirectory() as tmp:
+              with zipfile.ZipFile(archive) as z:
+                  assert z.testzip() is None
+                  z.extractall(tmp)
+              subprocess.run(["python",str(Path(tmp)/"scripts/selftest.py")],check=True)
+          PY
       - name: Upload verification artifacts
         uses: actions/upload-artifact@v4
         with:
