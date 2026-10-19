@@ -15,7 +15,7 @@ def sha(path: Path) -> str:
 def stamp(content: str, version: str) -> str:
     match = re.match(r"\\A---\\n(.*?)\\n---", content, flags=re.DOTALL)
     if not match:
-        raise ValueError("Generated SKILL.md has no frontmatter")
+        return "---\nmetadata:\n  version: \"" + version + "\"\n---\n\n" + content
     frontmatter = match.group(1)
     if re.search(r"(?m)^metadata:\\s*$", frontmatter):
         if re.search(r"(?m)^  version:", frontmatter):
