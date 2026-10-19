@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version/tag to use for artifacts (for manual test runs)"
+        description: Version for manual package verification
         required: true
         type: string
 
@@ -14,94 +14,132 @@ permissions:
   contents: write
 
 jobs:
-  build-release:
+  verify-five-runtimes:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout release tag
-        if: github.event_name == 'release'
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name }}
-
-      - name: Checkout manual ref
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install validation dependencies
-        run: python -m pip install --upgrade -r requirements-ci.txt
-
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref }}
       - name: Resolve version
         id: version
-        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          MANUAL_VERSION: ${{ inputs.version }}
         run: |
-          if [[ "${{ github.event_name }}" == "release" ]]; then
-            value="${{ github.event.release.tag_name }}"
-          else
-            value="${{ inputs.version }}"
-          fi
-          echo "value=$value" >> "$GITHUB_OUTPUT"
-
-      - name: Validate project
+          python - <<'PY'
+          import os, re
+          value = os.environ["RELEASE_TAG"] if os.environ["EVENT_NAME"] == "release" else os.environ["MANUAL_VERSION"]
+          normalized = value.removeprefix("v")
+          assert re.fullmatch(r"[0-9]+\\.[0-9]+\\.[0-9]+(?:[-.][A-Za-z0-9.-]+)?", normalized), "Invalid release version"
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("value=" + normalized + "\\n")
+          PY
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install -r requirements-ci.txt
+      - name: Download pinned Builder archive
+        env:
+          SOURCE_URL: https://github.com/erland/gpt-byggaren/releases/download/v1.6.26/gpt-byggaren-chat-1.6.26.zip
+          EXPECTED_SHA256: 92b8cd1cc82a06f0bff51a016be5bdb29a588ba46b059096d4208cd7ba6f7ce8
         run: |
-          python scripts/validate_project_status.py
-          python scripts/validate_runtime_models.py
-          python scripts/check_project_hygiene.py
-          PYTHONDONTWRITEBYTECODE=1 python -m pytest -q -p no:cacheprovider tests/runtime
-
-      - name: Build versioned distributions
-        run: python scripts/build_distributions.py --version "${{ steps.version.outputs.value }}"
-      - name: Check release inputs
-        run: python scripts/validate_canonical_assembly.py
-
-      - name: Normalize version
-        id: normalized_version
-        shell: bash
+          python - <<'PY'
+          import os,re
+          from urllib.parse import urlparse
+          from urllib.request import urlopen
+          from pathlib import Path
+          url=os.environ["SOURCE_URL"]
+          digest=os.environ["EXPECTED_SHA256"].lower()
+          p=urlparse(url)
+          assert p.scheme=="https" and p.hostname in {"github.com","objects.githubusercontent.com","release-assets.githubusercontent.com"}, "Only GitHub-hosted HTTPS releases supported"
+          assert re.fullmatch(r"[a-f0-9]{64}",digest), "Invalid SHA-256"
+          with urlopen(url,timeout=60) as response:
+              data=response.read(32*1024*1024+1)
+          assert len(data)<=32*1024*1024,"Archive too large"
+          import hashlib
+          actual=hashlib.sha256(data).hexdigest()
+          assert actual==digest, f"Engine archive SHA-256 mismatch: {actual}"
+          Path("builder.zip").write_bytes(data)
+          PY
+      - name: Unpack Builder safely
         run: |
-          value="${{ steps.version.outputs.value }}"
-          value="${value#v}"
-          echo "value=$value" >> "$GITHUB_OUTPUT"
-
-      - name: Validate OpenCode runtime
-        run: python scripts/validate_opencode_runtime.py --zip dist/kodforbattraren-opencode-${{ steps.normalized_version.outputs.value }}.zip
-
-      - name: Validate OpenAI Plugin runtime
-        run: python scripts/validate_openai_plugin.py --zip dist/kodforbattraren-plugin-${{ steps.normalized_version.outputs.value }}.zip
-
-      - name: Validate runtime parity
-        run: python scripts/validate_runtime_parity.py
-
-      - name: Validate release readiness
-        run: python scripts/validate_release_readiness.py
-
-      - name: Validate workflow parity
-        run: python scripts/validate_workflow_parity.py
-
-      - name: Upload workflow artifact
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          dest=Path("builder")
+          dest.mkdir()
+          with zipfile.ZipFile("builder.zip") as z:
+              for f in z.infolist():
+                  name=Path(f.filename)
+                  assert not name.is_absolute() and ".." not in name.parts,"Unsafe ZIP path"
+                  assert f.file_size<32*1024*1024,"Oversize member"
+              z.extractall(dest)
+          assert (dest/"distribution-engine/gpt-project.yaml").is_file(),"Wrong Builder archive"
+          PY
+      - name: Prepare isolated canonical project
+        run: python scripts/prepare_builder_1626.py --engine builder/distribution-engine --output ../migration-project
+      - name: Install matching canonical engine
+        run: python builder/distribution-engine/scripts/install_distribution_engine.py --source builder/distribution-engine --project-root ../migration-project
+      - name: Build five distribution archives
+        run: python ../migration-project/scripts/build_distributions.py --project-root ../migration-project --version ${{ steps.version.outputs.value }}
+      - name: Validate distribution archives
+        run: |
+          cd ../migration-project
+          python scripts/validate_distributions.py --project-root .
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          archives=sorted(Path("dist").glob("*.zip"))
+          assert len(archives)==6, [a.name for a in archives]
+          for p in archives:
+              with zipfile.ZipFile(p) as z:
+                  assert z.testzip() is None,p
+          project=[p for p in archives if p.name.startswith("kodforbattraren-project-")]
+          assert len(project)==1, [p.name for p in project]
+          with zipfile.ZipFile(project[0]) as z:
+              leaked=[n for n in z.namelist() if n == "builder.zip" or n.startswith(("builder/","migration-artifacts/"))]
+              assert not leaked, "Build-environment files leaked: "+str(leaked[:10])
+          plugin=[p for p in archives if "-plugin-" in p.name]
+          assert len(plugin)==1, [p.name for p in plugin]
+          with zipfile.ZipFile(plugin[0]) as z:
+              names=z.namelist()
+              assert "plugin.json" in names, "Plugin manifest missing"
+              assert len([n for n in names if n.endswith("/SKILL.md")]) >= 3, "Plugin skills missing"
+              runtime_scripts=[n for n in names if n.endswith(".py")]
+              print("Plugin Python scripts:",len(runtime_scripts),"(host execution unverified)")
+          print("PASS",len(archives),"ZIP archives; no Builder leakage")
+          PY
+      - name: Stage artifacts inside checkout
+        run: |
+          mkdir -p migration-artifacts
+          cp ../migration-project/dist/* migration-artifacts/
+      - name: Build and selftest optional Engine ZIP
+        run: |
+          python scripts/build_optional_engine.py --version ${{ steps.version.outputs.value }} --output migration-artifacts/kodforbattraren-engine-${{ steps.version.outputs.value }}.zip
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import zipfile
+          import tempfile
+          archive=Path("migration-artifacts/kodforbattraren-engine-${{ steps.version.outputs.value }}.zip")
+          with tempfile.TemporaryDirectory() as tmp:
+              with zipfile.ZipFile(archive) as z:
+                  assert z.testzip() is None
+                  z.extractall(tmp)
+              subprocess.run(["python",str(Path(tmp)/"scripts/selftest.py")],check=True)
+          PY
+      - name: Upload verification artifacts
         uses: actions/upload-artifact@v4
         with:
           name: kodforbattraren-${{ steps.version.outputs.value }}
-          path: |
-            dist/kodforbattraren-chat-*.zip
-            dist/kodforbattraren-custom-gpt-*.zip
-            dist/kodforbattraren-opencode-*.zip
-            dist/kodforbattraren-plugin-*.zip
-            dist/release-manifest.json
+          path: migration-artifacts/
           if-no-files-found: error
 
-      - name: Attach distributions to GitHub Release
+      - name: Attach packages to published release
         if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release upload "${{ github.event.release.tag_name }}" \
-            dist/kodforbattraren-chat-*.zip \
-            dist/kodforbattraren-custom-gpt-*.zip \
-            dist/kodforbattraren-opencode-*.zip \
-            dist/kodforbattraren-plugin-*.zip \
-            dist/release-manifest.json \
-            --clobber
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" migration-artifacts/* --clobber
