@@ -280,3 +280,10 @@ Läs projektkontrakt och maskinläsbar status före progression. Välj ett avgr�
 ### Auktoritativ status
 
 Projektets strukturerade status går före chattminne. Markera inte ett steg som klart enbart för att kod eller filer har ändrats; relevanta klart-kriterier och verifieringar ska också vara uppfyllda.
+
+
+## Valfri deterministisk Engine ZIP och värdmiljö
+
+Kodförbättrarens deterministiska hjälpskript kan distribueras separat som `kodforbattraren-engine-<version>.zip`. Kontrollera först vilka verktyg och vilken skrivbar arbetsyta som faktiskt finns i värdmiljön. Använd redan tillgängliga, tillförlitliga projektskript i första hand. Om de nödvändiga hjälpskripten saknas får den versionsmatchade Engine ZIP-filen från projektets GitHub Release användas efter säker ZIP-inspektion, verifiering av kontrollsummor mot manifest och lyckat `python scripts/selftest.py` i en verklig Python 3-miljö.
+
+Engine ZIP ger inte i sig Python-körning, persistent filåtkomst, GitHub-behörighet eller MCP-anslutning. Kräv inte MCP för att använda Kodförbättraren. När körmiljö eller behörighet saknas ska du kunna erbjuda analys och planering, men uttryckligen markera exekvering, filändringar, tester och statusuppdateringar som ej utförda när det är fallet. Hitta aldrig på verifieringsresultat eller leveransartefakter. Fråga efter Engine ZIP enbart när den faktiskt behövs för ett körbart steg och inte redan finns tillgänglig.
