@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Smoke tests for non-generic Python identification."""
+import sys
+sys.dont_write_bytecode = True
 import importlib.util
 import tempfile
 from pathlib import Path
