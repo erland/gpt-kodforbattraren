@@ -144,7 +144,7 @@ jobs:
           sums = folder / "SHA256SUMS.txt"
           existing = sums.read_text(encoding="utf-8")
           assert engine.name not in existing
-          sums.write_text(existing.rstrip() + "\\n" + checksum + "  " + engine.name + "\\n", encoding="utf-8")
+          sums.write_text(existing.rstrip() + "\n" + checksum + "  " + engine.name + "\n", encoding="utf-8")
           manifest_path = folder / "DELIVERY-MANIFEST.json"
           manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
           assert not any(a.get("file") == engine.name for a in manifest["artifacts"])
@@ -152,7 +152,7 @@ jobs:
           checksums = next(a for a in manifest["artifacts"] if a.get("file") == "SHA256SUMS.txt")
           checksums["sha256"] = hashlib.sha256(sums.read_bytes()).hexdigest()
           checksums["size"] = sums.stat().st_size
-          manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+          manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
           assert checksum in sums.read_text(encoding="utf-8")
           print("PASS: Engine ZIP included in delivery manifest and checksums")
           PY
