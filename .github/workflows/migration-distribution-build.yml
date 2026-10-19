@@ -75,7 +75,7 @@ jobs:
           for p in archives:
               with zipfile.ZipFile(p) as z:
                   assert z.testzip() is None,p
-          project=[p for p in archives if "-project-" in p.name]
+          project=[p for p in archives if p.name.startswith("kodforbattraren-project-")]
           assert len(project)==1, [p.name for p in project]
           with zipfile.ZipFile(project[0]) as z:
               leaked=[n for n in z.namelist() if n == "builder.zip" or n.startswith(("builder/","migration-artifacts/"))]
