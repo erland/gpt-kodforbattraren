@@ -1,0 +1,35 @@
+name: Migration preflight (GPT Byggaren 1.6.26)
+
+on:
+  pull_request:
+  push:
+    branches:
+      - migration/gpt-byggaren-1.6.26
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-parity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout actual PR source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-ci.txt
+      - name: Validate canonical assembly and Skill references
+        run: |
+          python scripts/validate_canonical_assembly.py
+          python scripts/validate_skill_sources.py
+      - name: Validate unchanged legacy contracts
+        run: |
+          python scripts/validate_project_status.py
+          python scripts/validate_runtime_models.py
+          python scripts/check_project_hygiene.py
+      - name: Legacy runtime regression tests
+        run: PYTHONDONTWRITEBYTECODE=1 python -m pytest -q -p no:cacheprovider tests/runtime

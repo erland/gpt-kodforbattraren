@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "review_required",
+  "legacy_instruction": "src/instructions/system.md",
+  "strategy": "preserve_original_instruction",
+  "sources": {
+    "core": "src/instructions/system.md"
+  },
+  "sections": [
+    {
+      "owner": "core",
+      "path": "src/instructions/system.md"
+    }
+  ],
+  "knowledge_root": "knowledge",
+  "notes": "En enda källsektion bevarar originalinstruktionen byte-exakt. Ingen modulär Skill-aktivering utan granskad sektionsuppdelning och bevisad paritet."
+}

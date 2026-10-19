@@ -285,3 +285,43 @@ runtime_parity:
   - artifact
   - workspace_state
   - tool
+
+# New canonical directory inventory for staged GPT Byggaren 1.6.26 migration.
+# This declaration does not change enabled runtimes or release targets.
+structure:
+  canonical_root: src
+  instructions:
+    path: src/instructions
+    required: true
+  conversation_starters:
+    path: src/conversation-starters
+    required: true
+  runtime_policy:
+    path: src/runtime-policy
+    required: false
+  knowledge:
+    path: knowledge
+    required: false
+  templates:
+    path: templates
+    required: false
+  schemas:
+    path: schemas
+    required: false
+  scripts:
+    path: scripts
+    required: false
+  tests:
+    path: tests
+    required: false
+  evals:
+    path: evals
+    required: false
+  build:
+    path: build
+    generated: true
+    create_when_needed: true
+  dist:
+    path: dist
+    generated: true
+    create_when_needed: true
