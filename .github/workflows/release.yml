@@ -31,9 +31,9 @@ jobs:
           import os, re
           value = os.environ["RELEASE_TAG"] if os.environ["EVENT_NAME"] == "release" else os.environ["MANUAL_VERSION"]
           normalized = value.removeprefix("v")
-          assert re.fullmatch(r"[0-9]+\\.[0-9]+\\.[0-9]+(?:[-.][A-Za-z0-9.-]+)?", normalized), "Invalid release version"
+          assert re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:[-.][A-Za-z0-9.-]+)?", normalized), "Invalid release version"
           with open(os.environ["GITHUB_OUTPUT"], "a") as output:
-              output.write("value=" + normalized + "\\n")
+              output.write("value=" + normalized + "\n")
           PY
       - uses: actions/setup-python@v5
         with:
