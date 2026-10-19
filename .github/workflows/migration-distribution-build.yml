@@ -64,6 +64,8 @@ jobs:
         run: python builder/distribution-engine/scripts/install_distribution_engine.py --source builder/distribution-engine --project-root ../migration-project
       - name: Build five distribution archives
         run: python ../migration-project/scripts/build_distributions.py --project-root ../migration-project --version migration-ci
+      - name: Stamp versions into generated Skills
+        run: python scripts/stamp_skill_versions.py --dist ../migration-project/dist --version migration-ci
       - name: Validate distribution archives
         run: |
           cd ../migration-project

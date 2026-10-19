@@ -27,6 +27,7 @@ jobs:
           python scripts/validate_canonical_assembly.py
           python scripts/validate_skill_sources.py
           python scripts/validate_modular_skill_assembly.py
+          python scripts/test_python_profile_detection.py
           python scripts/validate_canonical_engine_fallback.py
       - name: Validate unchanged legacy contracts
         run: |
