@@ -13,18 +13,20 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def stamp(content: str, version: str) -> str:
-    match = re.match(r"\\A---\\n(.*?)\\n---", content, flags=re.DOTALL)
+    """Update YAML frontmatter without creating duplicate headers or literal escapes."""
+    match = re.match(r"\A---\r?\n(.*?)\r?\n---(?=\r?\n|$)", content, flags=re.DOTALL)
     if not match:
-        return "---\nmetadata:\n  version: \"" + version + "\"\n---\n\n" + content
+        frontmatter = f'---\nmetadata:\n  version: "{version}"\n---\n\n'
+        return frontmatter + content
     frontmatter = match.group(1)
-    if re.search(r"(?m)^metadata:\\s*$", frontmatter):
+    if re.search(r"(?m)^metadata:\s*$", frontmatter):
         if re.search(r"(?m)^  version:", frontmatter):
-            frontmatter = re.sub(r'(?m)^  version:.*$', '  version: "' + version + '"', frontmatter)
+            frontmatter = re.sub(r'(?m)^  version:.*$', f'  version: "{version}"', frontmatter)
         else:
-            frontmatter = re.sub(r"(?m)^metadata:\\s*$", 'metadata:\\n  version: "' + version + '"', frontmatter)
+            frontmatter = re.sub(r"(?m)^metadata:\s*$", f'metadata:\n  version: "{version}"', frontmatter)
     else:
-        frontmatter += '\\nmetadata:\\n  version: "' + version + '"'
-    return "---\\n" + frontmatter + "\\n---" + content[match.end():]
+        frontmatter += f'\nmetadata:\n  version: "{version}"'
+    return "---\n" + frontmatter + "\n---" + content[match.end():]
 
 def main(dist: Path, version: str) -> None:
     if not (version == "migration-ci" or re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:[-.][A-Za-z0-9.-]+)?", version)):
