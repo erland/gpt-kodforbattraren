@@ -1,6 +1,7 @@
 name: Migration distribution build (GPT Byggaren 1.6.26)
 
 on:
+  pull_request:
   push:
     branches:
       - migration/gpt-byggaren-1.6.26
