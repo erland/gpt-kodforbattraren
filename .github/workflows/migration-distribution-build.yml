@@ -72,7 +72,7 @@ jobs:
       - name: Validate distribution archives
         run: |
           cd ../migration-project
-          python scripts/validate_distributions.py --help
+          python scripts/validate_distributions.py --project-root .
           python - <<'PY'
           import zipfile
           from pathlib import Path
