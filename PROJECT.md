@@ -34,7 +34,7 @@ Kritiska runtime-regler ska vara begripliga utan Knowledge-retrieval. Knowledge 
 
 ## Aktuell fas
 
-Version 1.0.0 är stabil baslinje. GPT Byggaren 1.5-migreringen är i **Steg 24 – slutvalidering av migreringen och releasekedjan**.
+Version 1.0.0 är dokumenterad domänbaslinje. Det separata migrationsreleaseflödet för **GPT Byggaren 1.6.26** är implementerat i `.github/workflows/release.yml`, med versionslåst byggmotor, kontrollsumma, fem runtime-distributioner, projekt-ZIP och valfri Engine ZIP. `project-status.yaml` anger steg 1–25 som slutförda.
 
 ## Teknikprofiler
 
@@ -45,21 +45,17 @@ Steg 14 tillför stackdetektion och fördjupande profiler för Java/Quarkus, Jav
 Canonical presentation och kortkommandon definieras i `knowledge/reporting-status-ux.md` och `templates/`.
 
 
-## GPT Byggaren 1.5-arkitektur
+## Runtime-arkitektur och migrationsspår
 
-Projektet är stateful och workspace/tool-heavy. Maskinläsbar status är auktoritativ framför chattminne.
+Projektet är stateful med maskinläsbar auktoritativ status. Den äldre projektprofilen deklarerar Chat ZIP, Custom GPT, OpenCode och OpenAI Plugin som aktiva, medan Claude Projects är inaktiv. Ordinarie CI validerar detta äldre spår.
 
-Aktiva peer runtimes:
-- ChatGPT Chat
-- ChatGPT Custom
-- OpenCode
+Det migrerade GPT Byggaren **1.6.26**-releaseflödet förbereder en separat projektkopia med modulära Skills. Det bygger fem runtime-distributioner och projekt-ZIP från samma canonical beteende. Källans modulära sammanställning kontrolleras byte-för-byte mot `src/instructions/system.md` med hjälp av `canonical/modular-assembly.json`. Den äldre profilen skrivs inte över av migrationen.
 
-Bedömda men inaktiva:
-- Claude Projects
-- OpenAI Plugin
+## Valfria verifieringsintegrationer
 
-De aktiva runtimepaketen delar samma plattformsneutrala capability-, artifact-, workspace_state- och tool-kontrakt. OpenCode använder workspace-first, värdens lokala shell/build/test/Git-verktyg och deklarerar inte projektets `scripts/` som automatiska runtime-tools.
+Kodförbättraren använder befintlig CI eller lokal exekvering före externa alternativ när dessa räcker. Agent Workspace kan användas för kompatibel isolerad ZIP-build/test; PWA Preview kan exponera säker statisk output; Browser Screenshot kan verifiera bild eller faktiska interaktioner när hosten stödjer dem. Allt är optional. Se `src/runtime-policy/optional-companion-verification-policy.md`.
 
+PR #10 tillförde instruktioner och statiska kontrakttester. PR #11 tillförde offline-testade fallbackbeslut i en referensmodell utan MCP-anrop. Detta är inte bevis för end-to-end-beteende i den installerade Kodförbättraren.
 
 ## OpenAI Plugin
 
