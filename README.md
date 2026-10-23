@@ -1,28 +1,26 @@
 # Kodförbättraren
 
-Kodförbättraren är ett GPT-projekt för säker och inkrementell förbättring av befintlig källkod. Den ska analysera ett projekt innan ändringar görs, prioritera förbättringar, skapa en stegvis plan och därefter kunna genomföra ett avgränsat steg åt gången via ZIP eller GitHub/PR.
+Kodförbättraren analyserar och förbättrar befintlig programvara inkrementellt. Den stöder ZIP-baserat arbete och GitHub/PR-flöden, med analys, prioritering, baseline och regressionstester före avslutade förbättringssteg.
 
-## Distributioner
+## Kanoniska källor och distribution
 
-Projektet bygger fyra aktiva runtime-distributioner från samma canonical kontrakt:
+`src/instructions/system.md` är den sammanställda, kanoniska legacy-instruktionen. Dess modulära motsvarighet ligger i `src/instructions/core.md` och `src/instructions/skills/`, med byte-för-byte-paritet enligt `canonical/modular-assembly.json`.
 
-- Chat ZIP
-- Custom GPT
-- OpenCode
-- OpenAI Plugin
+Projektet har två distributionsspår som måste skiljas åt:
 
-Canonical source ligger i projektträdet; genererade distributioner hamnar under `dist/` och ska inte vara källmaterial. Claude Projects är fortsatt inaktiv. OpenAI Plugin är en skills-first `equivalent_runtime_dependent` peer runtime: full implementation kräver writable workspace, persistent state och kompatibel shell/code execution; GitHub-write och ZIP-output används bara när hosten faktiskt erbjuder dem.
+- **Äldre profil i `gpt-project.yaml` och ordinarie CI:** Chat ZIP, Custom GPT, OpenCode och OpenAI Plugin är aktiva; Claude Projects är inaktiv i denna profil.
+- **Migrerat releaseflöde:** `.github/workflows/release.yml` använder versionslåst **GPT Byggaren 1.6.26**, genererar en separat migrationsprojektkopia genom `scripts/prepare_builder_1626.py` och bygger fem runtime-distributioner samt en komplett projekt-ZIP. En separat, valfri Engine ZIP byggs och självtestas. Det migrerade flödet ersätter inte automatiskt den äldre profilens inställningar på `main`.
 
-## Projektstatus
+Byggda arkiv hör hemma i distributionsartefakter, inte som kanonisk källa. GitHub-releaseversionen och eventuell installerad Plugin-version ska verifieras mot faktiska releaseartefakter före påståenden om driftsatt version.
 
-Den primära statuskällan är `project-status.yaml`. Den mänskligt läsbara sammanfattningen finns i `STATUS.md`.
+## Verifiering och valfria verktyg
 
-## Utvecklingsplan
+ZIP kräver inte GitHub. Kodförbättraren föredrar tillgänglig lokal build/test i ZIP-läge och befintlig GitHub Actions i GitHub-läge. Vid behov får de valfria pluginerna Agent Workspace (isolering, build, test), PWA Preview (temporär publicering av säker statisk webb) och Browser Screenshot (visuella eller verkligt interaktiva webbläsarkontroller) användas. Frånvaro av plugin blockerar inte analys eller planering; en obligatorisk ej körd kontroll får aldrig rapporteras som PASS.
 
-Se `docs/development-plan.md`.
+Se `src/runtime-policy/optional-companion-verification-policy.md`. PR #10 införde instruktioner och statiska kontraktstester. PR #11 tillförde offline-fallbacktester av en ren referensmodell; dessa anropar **inte** live-MCP och bevisar inte i sig faktisk modellorkestrering.
 
-## Aktuellt läge
+## Projektstatus och underlag
 
-Steg 1–25 är verifierade. Version `1.0.0` är fortsatt stabil baslinje och OpenAI Plugin är nu en aktiv runtime-dependent peer distribution.
+`project-status.yaml` är den auktoritativa arbetsstatusen. Se även `STATUS.md`, `PROJECT.md`, `docs/development-plan.md`, `docs/release-readiness.md` och `docs/known-limitations.md`.
 
-Se `docs/release-readiness.md`, `docs/runtime-parity.md` och `docs/known-limitations.md`. Nästa naturliga aktivitet är GitHub CI och en Release med taggen `v1.0.0`.
+Version `1.0.0` är projektets dokumenterade domänbaslinje och ska inte förväxlas med GPT Byggaren-motorns `1.6.26`.
