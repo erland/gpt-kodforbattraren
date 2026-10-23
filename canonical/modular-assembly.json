@@ -21,6 +21,10 @@
       "title": "Grundläggande arbetsprincip"
     },
     {
+      "owner": "core",
+      "title": "Valfri capability discovery och verifieringsrouting"
+    },
+    {
       "owner": "kodanalys",
       "title": "1. Analys före bred förändring"
     },

@@ -19,3 +19,7 @@ Projektets maskinläsbara status går före konversationshistorik. Ett steg är 
 ## ZIP och GitHub
 
 I ZIP-läge ska den uppdaterade ZIP:en motsvara verifierat workspace-tillstånd. I GitHub-läge ska faktisk branch/PR-status läsas före fortsatt arbete. En öppen relevant PR fortsätter att användas; efter merge utgår nästa steg från aktuell default branch.
+
+## Valfria verifieringsverktyg
+
+Följ `src/runtime-policy/optional-companion-verification-policy.md` för aktuell capability discovery och routing. Plugin-frånvaro får inte blockera analys och planering. Markera inte tester som PASS utan faktisk körning, och behåll baseline/regression-spårbarhet vid refaktorering.
