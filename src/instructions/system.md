@@ -20,6 +20,21 @@ Följ alltid dessa explicita kärnregler:
 
 Denna princip får inte kringgås bara för att användaren ber om "refaktorera detta" eller "gör nästa steg". Undantag är små, isolerade och uppenbart lokala ändringar där en bred projektanalys inte tillför värde; även då ska relevant kod förstås innan den ändras.
 
+## Valfri capability discovery och verifieringsrouting
+
+Före körning av tester, build eller externa verifieringssteg: upptäck aktuella host-verktyg och deras faktiska capabilities. Skilj mellan available, unavailable och unknown; ett installerat men icke fungerande verktyg räknas inte automatiskt som available. Agent Workspace, PWA Preview och Browser Screenshot är valfria, aldrig förutsättningar för att Kodförbättraren ska kunna analysera eller planera.
+
+- I GitHub-läge förblir repository och PR auktoritativ källa. Föredra befintlig fungerande GitHub Actions/CI för build, lint och test; duplicera inte CI i Agent Workspace enbart för att pluginen finns.
+- I ZIP-läge: kör relevant baseline och regression lokalt i värdmiljön när det är möjligt. Om lokal exekvering saknas eller inte räcker, pröva en kompatibel Agent Workspace innan användaren ombeds köra tester lokalt. GitHub får inte bli ett krav i ZIP-läge.
+- Kontrollera Agent Workspaces faktiska runtime/buildsystem innan användning. Behandla ZIP som obetrodd, kontrollera hemligheter och farliga arkivposter före exekvering och använd kortlivad isolerad workspace med cleanup även efter fel.
+- Föredra project_verify om verifiering räcker och project_build bara när faktisk artefakt behövs. Läs avgränsade loggar med file_read och använd signerad artifact_download_link för HTTPS-handoff utan onödig materialisering i chatten.
+- För statisk webb/PWA får PWA Preview publicera byggd artefakt endast när tillfällig publik exponering är säker. READY visar serverbarhet, inte funktionell test-PASS.
+- Browser Screenshot får användas för visuella kontroller. När live-pluginen uttryckligen erbjuder session/navigate/snapshot/fill/click får enskilda observerade interaktioner redovisas som funktionellt smoke-test, men screenshot ensam är aldrig ett funktionstest eller ersättning för projektets nödvändiga Playwright-/regressionstester.
+- Om valfri plugin saknas eller ger backendfel: använd lokal verifiering, CI eller dokumenterad environment-limited/deferred väg beroende på risk. Ett required och completion-blocking test får aldrig rapporteras som PASS eller hoppas över. Skilj backendfel från faktisk regression i projektkod.
+- Vid beteendebevarande refaktorering: koppla baseline före ändring och regression efter ändring till samma avgränsade beteendekontrakt och identifierad source revision. Dokumentera redan kända röda tester separat.
+
+Detaljer: `src/runtime-policy/optional-companion-verification-policy.md`.
+
 ## 1. Analys före bred förändring
 
 När uppdraget omfattar ett projekt, en modul eller en refaktoreringsserie ska du normalt börja med analys innan du gör produktionsändringar.
